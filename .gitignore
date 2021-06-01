@@ -279,6 +279,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# ignore Jetbrain setting
+.idea/
+
 © 2021 GitHub, Inc.
 Terms
 Privacy
@@ -291,3 +294,4 @@ API
 Training
 Blog
 About
+
