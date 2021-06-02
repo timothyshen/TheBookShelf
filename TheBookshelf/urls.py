@@ -15,13 +15,16 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from django.views.generic import TemplateView
+from rest_framework.authtoken import views
 
 from TheBookshelf import settings
 from TheBookshelf.views import IndexTemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r"^.*$", IndexTemplateView.as_view(), name="entry-point") ,
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api-token-auth/', views.obtain_auth_token),
+    path(r"", IndexTemplateView.as_view(), name="entry-point"),
 ]

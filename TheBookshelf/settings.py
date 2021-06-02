@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import datetime
 from pathlib import Path
 import os
 
@@ -19,7 +19,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ADD THESE TWO LINES
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 FRONTEND_DIR = os.path.join(BASE_DIR, 'frontend')
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -32,6 +31,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Set your auth user to the new user you have created
+AUTH_USER_MODEL = 'api.User'
 
 # Application definition
 
@@ -43,12 +44,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    #third party
+    # third party
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_jwt',
     'corsheaders',
-    'webpack_loader'
+    'webpack_loader',
+
+    # customised app
+    'user.apps.UserConfig'
 ]
 
 MIDDLEWARE = [
@@ -71,6 +75,26 @@ CORS_ORIGIN_WHITELIST = [
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True  # allow cookie
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated'
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication'
+    ),
+    # 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
+
+# JWT authentication setting
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_AUTH_HEADER_PREFIX': 'JWT',
+    # 'JWT_RESPONSE_PAYLOAD_HANDLER': 'users.util.jwt_response_payload_handler',
+    'JWT_ALLOW_REFRESH': True,
+}
 
 ROOT_URLCONF = 'TheBookshelf.urls'
 
@@ -92,7 +116,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'TheBookshelf.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -102,7 +125,6 @@ DATABASES = {
         'NAME': 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -122,7 +144,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -136,7 +157,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
@@ -146,7 +166,6 @@ STATICFILES_DIRS = [
     # os.path.join(BASE_DIR, "assets"),
     os.path.join(BASE_DIR, "frontend/dist"),
 ]
-
 
 WEBPACK_LOADER = {
     'DEFAULT': {
