@@ -18,13 +18,16 @@ from django.contrib import admin
 from django.urls import path, re_path, include
 from django.views.generic import TemplateView
 from rest_framework.authtoken import views
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 from TheBookshelf import settings
 from TheBookshelf.views import IndexTemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('api-token-auth/', views.obtain_auth_token),
+    path('api/auth/', include('user.urls')),
     path(r"", IndexTemplateView.as_view(), name="entry-point"),
 ]

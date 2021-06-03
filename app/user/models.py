@@ -12,8 +12,10 @@ from .manager import CustomUserManager
 # Create your models here.
 
 
-class User(AbstractBaseUser, PermissionsMixin):
-
+class AuthUser(AbstractBaseUser, PermissionsMixin):
+    """
+    用户表，override了Django自己的用户表
+    """
     # Fields tie to the roles!
     READER = 1
     AUTHOR = 2
@@ -56,7 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     icon = models.ImageField(upload_to="media/image/%Y/%m",
                              default=u"media/image/default.png",
                              max_length=1000,
-                             verbose_name=u"User icon", null=True)
+                             verbose_name=u"AuthUser icon", null=True)
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True, default=1, verbose_name='Role')
     date_joined = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
@@ -66,10 +68,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     created_by = models.EmailField()
     modified_by = models.EmailField()
 
+    objects = CustomUserManager()
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    objects = CustomUserManager()
 
     def __str__(self):
         return "{} - {}".format(self.email, self.username)
+
+    def get_full_name(self):
+        return self.email

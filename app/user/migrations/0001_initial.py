@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='User',
+            name='AuthUser',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('password', models.CharField(max_length=128, verbose_name='password')),
@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 ('email', models.EmailField(max_length=254, unique=True)),
                 ('gender', models.CharField(choices=[('male', 'Male'), ('female', 'Female')], default='Female', max_length=150, verbose_name='Gender')),
                 ('birthday', models.DateField(blank=True, null=True, verbose_name='Birthday')),
-                ('icon', models.ImageField(default='media/image/default.png', max_length=1000, null=True, upload_to='media/image/%Y/%m', verbose_name='User icon')),
+                ('icon', models.ImageField(default='media/image/default.png', max_length=1000, null=True, upload_to='media/image/%Y/%m', verbose_name='AuthUser icon')),
                 ('role', models.PositiveSmallIntegerField(blank=True, choices=[(4, 'Admin'), (1, 'Reader'), (3, 'Editor'), (2, 'Author')], default=1, null=True, verbose_name='Role')),
                 ('date_joined', models.DateTimeField(auto_now_add=True)),
                 ('is_active', models.BooleanField(default=True)),
