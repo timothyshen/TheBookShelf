@@ -55,7 +55,17 @@ INSTALLED_APPS = [
     # customised app
     'user'
 ]
+
+# Authentication backends
+AUTHENTICATION_BACKEND = [
+	'django.contrib.auth.backends.ModelBackend',
+	'users.backeds.EmailModelBackedn'
+	]
+
+# site id
 SITE_ID = 1
+
+# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -67,6 +77,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# corsheader whitelist
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:8080",
     "http://localhost:8000",
@@ -76,6 +87,7 @@ CORS_ORIGIN_WHITELIST = [
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True  # allow cookie
 
+# rest framework
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated'
@@ -118,8 +130,10 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': datetime.timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': datetime.timedelta(days=1),
 }
+
 ROOT_URLCONF = 'TheBookshelf.urls'
 
+# templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
