@@ -9,12 +9,14 @@ from django.contrib.auth.models import update_last_login
 from user.models import AuthUser
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """
     用户注册信息序列化
     """
+
     class Meta:
         model = AuthUser
         fields = (
@@ -35,6 +37,7 @@ class UserListSerializer(serializers.ModelSerializer):
     """
     所有用户名单的序列化
     """
+
     class Meta:
         model = AuthUser
         fields = '__all__'
@@ -93,3 +96,26 @@ class UserLoginSerializer(serializers.ModelSerializer):
             return validation
         except AuthUser.DoesNotExist:
             raise serializers.ValidationError("Invalid login credentials")
+
+
+# class CustomJWTSerializer(TokenObtainPairSerializer):
+#
+#     def get_token(cls, user):
+#         token = super(CustomJWTSerializer, cls).get_token(user)
+#
+#         token['username'] = user.username
+#         return token
+#
+#     def validate(self, attrs):
+#         credentials = {
+#             'username': '',
+#             'password': attrs.get("password")
+#         }
+#
+#         user_obj = AuthUser.objects.filter(email=attrs.get("username")).first() or AuthUser.objects.filter(
+#             username=attrs.get("username")).first()
+#
+#         if user_obj:
+#             credentials['username'] = user_obj.username
+#
+#         return super().validate(credentials)

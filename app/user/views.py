@@ -3,11 +3,13 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .serializers import (
     UserRegistrationSerializer,
     UserLoginSerializer,
-    UserListSerializer
+    UserListSerializer,
+    # CustomJWTSerializer
 )
 
 from .models import AuthUser
@@ -94,3 +96,8 @@ class UserListView(APIView):
 
             }
             return Response(response, status=status.HTTP_200_OK)
+
+
+# class MyObtainTokenPairView(TokenObtainPairView):
+#     permission_classes = (AllowAny,)
+#     serializer_class = CustomJWTSerializer
