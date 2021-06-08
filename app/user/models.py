@@ -33,7 +33,7 @@ class AuthUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = 'user'
         verbose_name_plural = 'users'
-        db_table = "user"
+        db_table = "AuthUser"
 
     username_validator = UnicodeUsernameValidator()
 
@@ -62,6 +62,7 @@ class AuthUser(AbstractBaseUser, PermissionsMixin):
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True, default=1, verbose_name='Role')
     date_joined = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     created_date = models.DateTimeField(default=timezone.now)
     modified_date = models.DateTimeField(default=timezone.now)

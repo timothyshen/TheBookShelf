@@ -12,17 +12,17 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='user',
+            model_name='AuthUser',
             name='role',
             field=models.PositiveSmallIntegerField(blank=True, choices=[(1, 'Reader'), (3, 'Editor'), (4, 'Admin'), (2, 'Author')], default=1, null=True, verbose_name='Role'),
         ),
         migrations.AlterField(
-            model_name='user',
+            model_name='AuthUser',
             name='uid',
             field=models.UUIDField(default=uuid.UUID('ff956de8-62bf-476e-bb26-965fc308c58a'), editable=False, unique=True, verbose_name='Public identifier'),
         ),
         migrations.AlterModelTable(
-            name='user',
-            table='user',
+            name='AuthUser',
+            table='AuthUser',
         ),
     ]

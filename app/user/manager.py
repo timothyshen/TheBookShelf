@@ -21,7 +21,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError(_("The password must be set"))
 
         email = self.normalize_email(email)
-        user = self.model(email=email,**extra_fields)
+        user = self.model(email=email, username=email,**extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -31,8 +31,9 @@ class CustomUserManager(BaseUserManager):
         创建超级用户（superuser）
         """
         extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('role', 4)
 
-        if extra_fields.get('role') != 1:
+        if extra_fields.get('role') != 4:
             raise ValueError("Superuser must be admin!")
         return self.create_user(email, password, **extra_fields)
