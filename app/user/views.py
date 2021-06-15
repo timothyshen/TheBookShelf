@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
-
+import requests
 from .serializers import (
     UserRegistrationSerializer,
     UserLoginSerializer,
@@ -27,17 +27,18 @@ class AuthUserRegisterView(APIView):
         valid = serializer.is_valid(raise_exception=True)
 
         if valid:
-            serializer.save()
+            new_user = serializer.save()
             status_code = status.HTTP_201_CREATED
 
-            response = {
-                'success': True,
-                'statusCode': status_code,
-                'message': 'AuthUser successfully registered!',
-                'user': serializer.data
-            }
-
-            return Response(response, status=status_code)
+            r = requests.post('http://127.0.0.1:8000/api-auth/token', data={
+                'username': new_user.email,
+                'password': request.data['password'],
+                'client_id': 'Your Client ID',
+                'client_secret': 'Your Client Secret',
+                'grant_type': 'password'
+            })
+            return Response(r.json(), status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AuthUserLoginView(APIView):
@@ -96,7 +97,6 @@ class UserListView(APIView):
 
             }
             return Response(response, status=status.HTTP_200_OK)
-
 
 # class MyObtainTokenPairView(TokenObtainPairView):
 #     permission_classes = (AllowAny,)

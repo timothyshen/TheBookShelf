@@ -51,16 +51,49 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'webpack_loader',
-
+    'oauth2_provider',
+    'social_django',
+    'drf_social_oauth2',
     # customised app
     'user'
 ]
 
 # Authentication backends
-AUTHENTICATION_BACKEND = [
-	'django.contrib.auth.backends.ModelBackend',
-	'users.backeds.EmailModelBackedn'
-	]
+AUTHENTICATION_BACKENDS = [
+    # Google OAuth2
+    'social_core.backends.google.GoogleOAuth2',
+    # Facebook loging
+    'social_core.backends.facebook.FacebookAppOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
+
+    # authentication setting
+
+    'django.contrib.auth.backends.ModelBackend',
+    'drf_social_oauth2.backends.DjangoOAuth2',
+]
+
+# social Authentication
+# Facebook
+SOCIAL_AUTH_FACEBOOK_KEY = '187272676634276'
+SOCIAL_AUTH_FACEBOOK_SECRET = '406d68e8f9d94582cb57b03a045c79ee'
+# Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from Facebook.
+# Email is not sent by default, to get it, you must request the email permission.
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+  'fields': 'id, name, email'
+}
+SOCIAL_AUTH_USER_FIELDS = ['email', 'username', 'first_name', 'password']
+# Google
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "690024386674-cpkugdn9h578rkollmjujuhj54db0v54.apps.googleusercontent.com"
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "DHBUz8Jy-KqAxb_85QsHGgGqP"
+# Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+]
+
+
+
 
 # site id
 SITE_ID = 1
@@ -75,6 +108,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 # corsheader whitelist
@@ -93,8 +127,11 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated'
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication'
+        'rest_framework.authentication.BasicAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'drf_social_oauth2.authentication.SocialAuthentication',
     ),
     # 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
@@ -144,6 +181,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
