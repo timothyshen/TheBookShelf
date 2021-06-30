@@ -55,7 +55,9 @@ INSTALLED_APPS = [
     'social_django',
     'drf_social_oauth2',
     # customised app
-    'user'
+    'user',
+    'payment',
+    'product'
 ]
 
 # Authentication backends
