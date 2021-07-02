@@ -5,7 +5,7 @@
   </div>
 </template>
 <script>
-import Login from "@/components/Login/Login";
+import Login from "@/views/components/Login/Login";
 export default {
   components: {Login},
   name: 'HelloWorld',

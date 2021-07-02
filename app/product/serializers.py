@@ -29,7 +29,7 @@ class TopUpItemSerializer(serializers.ModelSerializer):
 class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription_Plan
-        fiels = "__all__"
+        fields = "__all__"
 
 
 class UserProfileSerializer(serializers.ModelSerializer):

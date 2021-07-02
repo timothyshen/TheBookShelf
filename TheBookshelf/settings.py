@@ -73,6 +73,9 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'drf_social_oauth2.backends.DjangoOAuth2',
 ]
+#stripe
+STRIPE_PUB_KEY = 'pk_test_51IlivUBaL13Hgkoy4zeKPAQdCxH6Ys3d86BxwxBkWPFB0flVmb8eV46tocnKIIQA4NHGZpj0UeXQLHzJs8T2IaM800tTflYKN6 '
+STRIPE_SECRET_KEY = 'sk_test_51IlivUBaL13HgkoypwU1xHXDwr0MCS5fctDtcsip78SBrXYqTyC42s0qZhRNlC8vVld51pyRwge7MIyzwK8B4Xm300XZ2uZJ9v '
 
 # social Authentication
 # Facebook
@@ -126,7 +129,7 @@ CORS_ALLOW_CREDENTIALS = True  # allow cookie
 # rest framework
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated'
+        'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
