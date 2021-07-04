@@ -41,7 +41,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             'user',
-            "balance",
+            "Balance",
             "plan",
             "plan_status",
             "plan_end_date"
