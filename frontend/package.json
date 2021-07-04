@@ -10,7 +10,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "babel": "^6.23.0",
-    "core-js": "^3.6.5",
+    "core-js": "^3.14.0",
     "vue": "^2.6.11",
     "vue-facebook-login-component": "^4.0.2",
     "vue-google-signin-button": "^1.0.4",
