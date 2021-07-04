@@ -11,7 +11,7 @@
     "axios": "^0.21.1",
     "babel": "^6.23.0",
     "core-js": "^3.6.5",
-    "vue": "^2.6.11",
+    "vue": "^2.6.14",
     "vue-facebook-login-component": "^4.0.2",
     "vue-google-signin-button": "^1.0.4",
     "vue-loader": "^15.9.7",
