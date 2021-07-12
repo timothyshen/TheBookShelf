@@ -53,7 +53,7 @@ export default {
           .then(resp => {
             console.log(resp)
             this.user = resp.data
-            this.$route.toLocaleString()
+            this.$route.push()
           })
           .catch(err => {
             console.log(err.response)

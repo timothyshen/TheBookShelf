@@ -52,16 +52,15 @@ def get_stripe_pub_key(request):
 @api_view(['POST'])
 def create_checkout_session(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
-    data = json.loads(request.body)
+    data = request.data
+    print(data)
+    if data['plan']:
+        price_id = 'price_1J8WjoBaL13HgkoyyGzH3ZBo'
 
-    # if data['plan']:
-    #     plan = request.data['plan']
-    #     if plan == '1 month':
-    #         plan = settings.xxx
-    billing_address = BillingAddressSerializer(data['billing'])
+    # # billing_address = BillingAddressSerializer(data['billing'])
     gateway = data['gateway']
-    user_profile = User_profile.objects.get(user__in=[request.user])
-    if gateway == 'stripe' and type == 'plan':
+    user_profile = User_profile.objects.get(user__in=[data['user']])
+    if gateway == 'stripe':
         try:
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=user_profile.user.uid,
@@ -71,7 +70,7 @@ def create_checkout_session(request):
                 mode='subscription',
                 line_items=[
                     {
-                        # 'price': price_id,
+                        'price': price_id,
                         'quantity': 1
                     }
                 ]

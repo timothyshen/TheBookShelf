@@ -14,9 +14,6 @@ from .views import (
 )
 
 urlpatterns = [
-    # path('token/obtain/', MyObtainTokenPairView.as_view(), name='token_create'),
-    path('token/obtain/', jwt_views.TokenObtainPairView.as_view(), name='token_create'),
-    path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('register', AuthUserRegisterView.as_view(), name='register'),
     path('login', AuthUserLoginView.as_view(), name='login'),
     path('users', UserListView.as_view(), name='users')

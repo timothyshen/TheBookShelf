@@ -78,26 +78,22 @@ class UserListView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        user = request.user
-        if user.role != 1:
-            response = {
-                'success': False,
-                'status_code': status.HTTP_403_FORBIDDEN,
-                'message': 'You are not authorized to perform this action'
-            }
-            return Response(response, status.HTTP_403_FORBIDDEN)
-        else:
-            users = AuthUser.objects.all()
-            serializer = self.serializer_class(users, many=True)
-            response = {
-                'success': True,
-                'status_code': status.HTTP_200_OK,
-                'message': 'Successfully fetched users',
-                'users': serializer.data
+        # user = request.user
+        # if user.role != 1:
+        #     response = {
+        #         'success': False,
+        #         'status_code': status.HTTP_403_FORBIDDEN,
+        #         'message': 'You are not authorized to perform this action'
+        #     }
+        #     return Response(response, status.HTTP_403_FORBIDDEN)
+        # else:
+        users = AuthUser.objects.all()
+        serializer = self.serializer_class(users, many=True)
+        response = {
+            'success': True,
+            'status_code': status.HTTP_200_OK,
+            'message': 'Successfully fetched users',
+            'users': serializer.data
 
-            }
-            return Response(response, status=status.HTTP_200_OK)
-
-# class MyObtainTokenPairView(TokenObtainPairView):
-#     permission_classes = (AllowAny,)
-#     serializer_class = CustomJWTSerializer
+        }
+        return Response(response, status=status.HTTP_200_OK)

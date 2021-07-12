@@ -17,12 +17,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, re_path, include
 from django.views.generic import TemplateView
-from rest_framework.authtoken import views
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
-
 from TheBookshelf import settings
 from TheBookshelf.views import IndexTemplateView
 
