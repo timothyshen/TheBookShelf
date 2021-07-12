@@ -29,5 +29,9 @@ urlpatterns = [
     path('api/v1/', include('payment.urls')),
     path('api/auth/', include('rest_framework.urls')),
     path('api-auth/', include('drf_social_oauth2.urls', namespace='drf')),  # ???? namespace='drf' is mandatory
-    path(r"", IndexTemplateView.as_view(), name="entry-point"),
+    path(r'', IndexTemplateView.as_view()),
+]
+
+urlpatterns += [
+    re_path('^.*$', IndexTemplateView.as_view()),
 ]

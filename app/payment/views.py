@@ -64,8 +64,8 @@ def create_checkout_session(request):
         try:
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=user_profile.user.uid,
-                success_url='http://127.0.0.1:8000/cart/success/',
-                cancel_url='http://127.0.0.1:8000/cart/',
+                success_url='payment/success/',
+                cancel_url='http://127.0.0.1:8000/',
                 payment_method_types=['card'],
                 mode='subscription',
                 line_items=[
