@@ -10,15 +10,13 @@
         <p v-for="error in errors" v-bind:key="error">{{ error }}</p>
       </div>
     </form>
-    <login></login>
   </div>
 </template>
 <script>
 import axios from "axios";
-import Login from "@/views/components/Login/Login";
 import {toLogin, getUserInfo, getUserBookcase} from "@/api/axois";
 export default {
-  components: {Login},
+  components: {},
   name: 'HelloWorld',
   props: {
     msg: String

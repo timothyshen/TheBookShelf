@@ -21,7 +21,7 @@
 // TODO：需要重新写前端FB注册
 import VFacebookLogin from 'vue-facebook-login-component';
 import axios from 'axios'
-import Facebooklogin from "@/views/components/Login/facebook-login";
+import Facebooklogin from "@/views/components/facebook-login";
 export default {
   name: "Login",
   data(){
