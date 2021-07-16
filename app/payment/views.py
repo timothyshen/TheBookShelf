@@ -1,4 +1,6 @@
 import json
+
+from django.views.decorators.http import require_POST
 from rest_framework.serializers import Serializer
 import stripe
 from datetime import datetime
@@ -64,7 +66,7 @@ def create_checkout_session(request):
         try:
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=user_profile.user.uid,
-                success_url='payment/success/',
+                success_url='http://127.0.0.1:8000/payment/success/?session_id={CHECKOUT_SESSION_ID}',
                 cancel_url='http://127.0.0.1:8000/',
                 payment_method_types=['card'],
                 mode='subscription',
@@ -75,7 +77,6 @@ def create_checkout_session(request):
                     }
                 ]
             )
-            order = OrderSerailzier(data)
             return Response({'sessionId': checkout_session['id']})
         except Exception as e:
             return Response({'error': str(e)})
@@ -85,24 +86,25 @@ def create_checkout_session(request):
 def check_session(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     error = ''
+    print(request.data)
+    print(request.user)
+    print()
 
     try:
-        user_profile = User_profile.objects.filter(user__in=[request.user])
+        user_profile = User_profile.objects.get(user__in=[request.user])
         subscription = stripe.Subscription.retrieve(user_profile.stripe_subscription_id)
         product = stripe.Product.retrieve(subscription.plan.product)
-
         user_profile.plan_status = user_profile.PLAN_ACTIVE
         user_profile.plan_end_date = datetime.fromtimestamp(subscription.current_period_end)
-        user_profile.plan = Subscription_Plan.objects.get(name=product.name)
+        user_profile.plan = Subscription_Plan.objects.get(title=product.name)
         user_profile.save()
-
         serializer = UserSerializer(user_profile)
-
+        print('serializer', serializer)
         return Response(serializer.data)
-    except Exception:
+    except Exception as e:
         error = 'There something wrong. Please try again!'
 
-        return Response({'error': error})
+        return Response({'error': error, 'description': e})
 
 
 @csrf_exempt
@@ -112,8 +114,7 @@ def stripe_webhook(request):
     payload = request.body
     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
     event = None
-
-    print('payload', payload)
+    # print('payload', payload)
 
     try:
         event = stripe.Webhook.construct_event(
@@ -124,11 +125,19 @@ def stripe_webhook(request):
     except stripe.error.SignaturVerificationError as e:
         return HttpResponse(status=400)
 
+    if event.type == 'payment_intent.succeeded':
+        payment_intent = event.data.object  # contains a stripe.PaymentIntent
+        print('PaymentIntent was successful!')
+    elif event.type == 'payment_method.attached':
+        payment_method = event.data.object  # contains a stripe.PaymentMethod
+        print('PaymentMethod was attached to a Customer!')
+        # ... handle other event types
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-        team = User_profile.objects.get(user__uid=session.get('client_reference_id'))
-        team.stripe_customer_id = session.get('customer')
-        team.stripe_subscription_id = session.get('subscription')
-        team.save()
+
+        user = User_profile.objects.get(user__uid=session.get('client_reference_id'))
+        user.stripe_customer_id = session.get('customer')
+        user.stripe_subscription_id = session.get('subscription')
+        user.save()
 
     return HttpResponse(status=200)

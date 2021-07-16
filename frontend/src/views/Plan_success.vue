@@ -6,7 +6,7 @@
       </div>
 
       <div class="column is-4">
-        <p>Thank you for subscribing to a plan!</p>
+        <p class="is-center">Thank you for subscribing to a plan!</p>
       </div>
     </div>
   </div>
@@ -20,24 +20,17 @@ export default {
     return {}
   },
   mounted() {
-      axios
-          .post('/api/v1/stripe/check_session/', {
-            'session_id': this.$route.query.session_id
-          })
-          .then(response => {
-            console.log(response)
+    console.log(localStorage.getItem('session_id'))
+    axios
+        .post('/api/v1/stripe/check_session/', {
+          'session_id': this.$route.query.session_id
+        })
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
 
-            // this.$store.commit('setTeam', {
-            //   'id': response.data.id,
-            //   'name': response.data.name,
-            //   'plan': response.data.plan.name,
-            //   'max_leads': response.data.plan.max_leads,
-            //   'max_clients': response.data.plan.max_clients
-            // })
-          })
-          .catch(error => {
-
-            console.log('Error', error)
+          console.log('Error', error)
           })
   }
 }

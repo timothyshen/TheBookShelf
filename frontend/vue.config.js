@@ -19,14 +19,11 @@ module.exports = {
     config.resolve.alias.set("__STATIC__", "static");
 
     config.devServer
-      // the first 3 lines of the following code have been added to the configuration
-      .public("http://localhost:8081/")
-      .host("localhost")
-      .port(8080)
-      .hotOnly(true)
-      .watchOptions({ poll: 1000 })
-      .https(false)
-      .disableHostCheck(true)
+        // the first 3 lines of the following code have been added to the configuration
+        .public("http://localhost:8081/")
+        .host("localhost")
+        .port(8080)
+        .historyApiFallback(true)
       .headers({ "Access-Control-Allow-Origin": ["*"] });
   }
 

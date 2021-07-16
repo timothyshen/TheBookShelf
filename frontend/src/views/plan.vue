@@ -1,7 +1,7 @@
 <template>
   <div>
     <p>1 month plan</p>
-    <button class="button is-primary" @click="subscribe('1 month plan')">Subscribe</button>
+    <button class="button is-danger" @click="subscribe('1 month plan')">Subscribe</button>
   </div>
 </template>
 
@@ -29,7 +29,7 @@ export default {
       this.$store.commit('setIsLoading', true)
 
       await axios
-          .get(`/api/v1/stripe/get_stripe_pub_key/`)
+          .get(`http://127.0.0.1:8000/api/v1/stripe/get_stripe_pub_key/`)
           .then(response => {
             this.pub_key = response.data.pub_key
           })
@@ -51,8 +51,8 @@ export default {
       axios
           .post('/api/v1/stripe/create_checkout_session/', data)
           .then(response => {
-            console.log(response)
-
+            console.log(response.data.sessionId)
+            localStorage.setItem('session_id', response.data.sessionId)
             return this.stripe.redirectToCheckout({sessionId: response.data.sessionId})
           })
           .catch(error => {

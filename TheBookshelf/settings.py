@@ -19,6 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ADD THESE TWO LINES
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 FRONTEND_DIR = os.path.join(BASE_DIR, 'frontend')
+CSRF_COOKIE_SECURE = False
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -68,13 +69,13 @@ AUTHENTICATION_BACKENDS = [
     'social_core.backends.facebook.FacebookOAuth2',
 
     # authentication setting
-
     'django.contrib.auth.backends.ModelBackend',
     'drf_social_oauth2.backends.DjangoOAuth2',
 ]
-#stripe
+# stripe
 STRIPE_PUB_KEY = 'pk_test_51IlivUBaL13Hgkoy4zeKPAQdCxH6Ys3d86BxwxBkWPFB0flVmb8eV46tocnKIIQA4NHGZpj0UeXQLHzJs8T2IaM800tTflYKN6 '
 STRIPE_SECRET_KEY = 'sk_test_51IlivUBaL13HgkoypwU1xHXDwr0MCS5fctDtcsip78SBrXYqTyC42s0qZhRNlC8vVld51pyRwge7MIyzwK8B4Xm300XZ2uZJ9v '
+STRIPE_WEBHOOK_KEY = 'whsec_R8I8dykTzlObMCNy2wla0C7WtqvTA5Nc'
 
 # social Authentication
 # Facebook
@@ -112,15 +113,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
+
 
 # corsheader whitelist
 CORS_ORIGIN_WHITELIST = [
-    "http://localhost:8080",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "http://192.168.1.100:8787"
 ]
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True  # allow cookie
@@ -131,7 +130,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         'drf_social_oauth2.authentication.SocialAuthentication',
     ),

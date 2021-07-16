@@ -3,9 +3,9 @@
     <form @submit.prevent="toggleLogin">
       <label>Username:</label>
       <input v-model="username" name="username">
-      <label>Password</label>
+      <label>Password:</label>
       <input v-model="password" name="password" type="password">
-      <button @click="toggleLogin">logon</button>
+      <button class="button is-primary" @click="toggleLogin">login</button>
       <div v-if="errors.length">
         <p v-for="error in errors" v-bind:key="error">{{ error }}</p>
       </div>
@@ -14,10 +14,10 @@
 </template>
 <script>
 import axios from "axios";
-import {toLogin, getUserInfo, getUserBookcase} from "@/api/axois";
+
 export default {
-  components: {},
   name: 'HelloWorld',
+  components: {},
   props: {
     msg: String
   },
@@ -44,37 +44,41 @@ export default {
       }
       // login api call - for token generation
       // then add token to the store
-      await toLogin(userdata)
+      await axios
+          .post('http://127.0.0.1:8000/api-auth/token/', userdata)
           .then((response) => {
             console.log(response.data)
-            const access = response.data.access_token
+            const access_token = response.data.access_token
             this.$store.commit('LOGIN_SUCCESS', response)
-            axios.defaults.headers.common['Authorization'] = 'Bearer ' + access
-            console.log(axios.defaults.headers.common['Authorization'])
+            console.log(access_token)
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token
+            localStorage.setItem('token_access', access_token)
+            localStorage.setItem('token_refresh', response.data.refresh_token)
           }).catch((error) => {
             if (error.response) {
               for (const property in error.response.data) {
                 this.errors.push(`${property}: ${error.response.data[property]}`)
               }
             } else if (error.message) {
-              this.errors.push('Something went wrong. Please try again!')
+              this.errors.push(error.message)
             }
           })
       // Get user information
       // After the token added to authentication, retrieve user information from server
-      await getUserInfo()
+      await axios
+          .get('http://127.0.0.1:8000/api/v1/users')
           .then((response) => {
             console.log(response.data)
-            this.$store.commit('setUser', response.data.user[0])
+            this.$store.commit('setUser', {
+              'id': response.data.users[0].id,
+              'username': response.data.users[0].username
+            })
+            localStorage.setItem('username', response.data.users[0].username)
+            localStorage.setItem('userid', response.data.users[0].id)
+            this.$router.push('/')
           }).catch((error) => {
             console.log(error.data)
           })
-      await getUserBookcase()
-          .then((response) => {
-            console.log(response.data)
-          }).catch((error) => {
-            console.log(error.data)
-          });
     }
   }
 
@@ -83,18 +87,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+
 </style>
