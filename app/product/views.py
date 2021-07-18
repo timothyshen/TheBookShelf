@@ -38,7 +38,7 @@ class SubscriptionView(generics.ListAPIView):
 class UserProfileView(APIView):
 
     def get_object(self, pk):
-        return User_profile.objects.get_or_create(pk=pk, plan_id=1)
+        return User_profile.objects.get_or_create(pk=pk, title='Free')
 
     def get(self, request, pk, format=None):
         user = self.get_object(pk)

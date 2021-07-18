@@ -33,9 +33,9 @@ class AuthUserRegisterView(APIView):
             r = requests.post('http://127.0.0.1:8000/api-auth/token', data={
                 'username': new_user.email,
                 'password': request.data['password'],
-                'client_id': 'Your Client ID',
-                'client_secret': 'Your Client Secret',
-                'grant_type': 'password'
+                'client_id': 'CuHSbKKrPUwL0IzeRZ5M8CnTVrGav58BW9m75M9v',
+                'client_secret': 'kMX4H5mGCSGBgmhDTfi8vYLfU8SRfqBWx5F4IpFgtEKIjBcvLdc6oUImZ2rLVKPAgznY4mjMf9s8k67QYK1E9fzDrsdjw2dzYVXcLPzecSW4OWOV3DCfuTWD8lWQKRPo',
+                'grant_type': 'password',
             })
             return Response(r.json(), status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'webpack_loader',
     'oauth2_provider',
     'social_django',
     'drf_social_oauth2',
@@ -212,13 +211,6 @@ STATICFILES_DIRS = [
     # os.path.join(BASE_DIR, "assets"),
     os.path.join(BASE_DIR, "frontend/dist"),
 ]
-
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'dist/',
-        'STATS_FILE': os.path.join(BASE_DIR, 'frontend', 'webpack-stats.json')
-    }
-}
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

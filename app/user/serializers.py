@@ -19,7 +19,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AuthUser
-        fields = ('email', 'username', 'password', 'first_name')
+        fields = ('email', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -95,25 +95,3 @@ class UserLoginSerializer(serializers.ModelSerializer):
         except AuthUser.DoesNotExist:
             raise serializers.ValidationError("Invalid login credentials")
 
-
-# class CustomJWTSerializer(TokenObtainPairSerializer):
-#
-#     def get_token(cls, user):
-#         token = super(CustomJWTSerializer, cls).get_token(user)
-#
-#         token['username'] = user.username
-#         return token
-#
-#     def validate(self, attrs):
-#         credentials = {
-#             'username': '',
-#             'password': attrs.get("password")
-#         }
-#
-#         user_obj = AuthUser.objects.filter(email=attrs.get("username")).first() or AuthUser.objects.filter(
-#             username=attrs.get("username")).first()
-#
-#         if user_obj:
-#             credentials['username'] = user_obj.username
-#
-#         return super().validate(credentials)
