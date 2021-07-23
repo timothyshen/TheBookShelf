@@ -49,11 +49,14 @@ class BillingAddressSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-
+# class OrderSerailzier(serializers.ModelSerializer):
+#     user = UserSerializer()
+#     billing_address = BillingAddressSerializer()
+#
+#     class Meta:
+#         model = Order
+#         fields = "__all__"
 class OrderSerailzier(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    billing_address = BillingAddressSerializer(read_only=True)
-
     class Meta:
         model = Order
         fields = "__all__"

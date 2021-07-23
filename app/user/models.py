@@ -32,7 +32,7 @@ class AuthUser(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         verbose_name = 'user'
-        verbose_name_plural = 'users'
+        verbose_name_plural = 'user'
         db_table = "AuthUser"
 
     username_validator = UnicodeUsernameValidator()

@@ -39,13 +39,14 @@ class Order(models.Model):
 
     STATUS_CHOICES = (
         (ORDERED, 'Ordered'),
-        (COMPLETED, 'Shipped'),
+        (COMPLETED, 'completed'),
         (CANCELLED, 'Cancelled'),
         (REFUNDED, 'Refunded')
     )
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True, editable=False)
     user = models.ForeignKey(AuthUser, related_name='orders', on_delete=models.SET_NULL, blank=True, null=True)
-    billing_address = models.ForeignKey(Billing_address, related_name='orders', on_delete=models.DO_NOTHING, )
+    billing_address = models.ForeignKey(Billing_address, related_name='orders', on_delete=models.SET_NULL, blank=True,
+                                        null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -53,7 +54,7 @@ class Order(models.Model):
     paid_amount = models.FloatField(blank=True, null=True)
     used_coupon = models.CharField(max_length=50, blank=True, null=True)
 
-    payment_intent = models.CharField(max_length=255)
+    payment_intent = models.CharField(max_length=255, blank=True, null=True)
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=ORDERED)
 

@@ -49,7 +49,7 @@ class User_profile(models.Model):
         (PLAN_ACTIVE, 'VIP'),
         (PLAN_INACTIVE, 'Normal')
     )
-    user = models.ForeignKey(AuthUser, related_name='created_profile', on_delete=models.CASCADE)
+    user = models.OneToOneField(AuthUser, related_name='created_profile', on_delete=models.CASCADE)
     Balance = models.IntegerField(default=0)
     plan = models.ForeignKey(Subscription_Plan, related_name='vip_status', on_delete=models.SET_NULL, null=True,
                              blank=True)

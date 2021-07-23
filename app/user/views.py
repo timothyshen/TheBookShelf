@@ -1,5 +1,6 @@
+import generic as generic
 from django.shortcuts import render
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -37,7 +38,7 @@ class AuthUserRegisterView(APIView):
                 'client_secret': 'kMX4H5mGCSGBgmhDTfi8vYLfU8SRfqBWx5F4IpFgtEKIjBcvLdc6oUImZ2rLVKPAgznY4mjMf9s8k67QYK1E9fzDrsdjw2dzYVXcLPzecSW4OWOV3DCfuTWD8lWQKRPo',
                 'grant_type': 'password',
             })
-            return Response(r.json(), status=status.HTTP_201_CREATED)
+            return Response(r.json(), status=status_code)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -46,54 +47,28 @@ class AuthUserLoginView(APIView):
     用户登入api接口
     """
     serializer_class = UserLoginSerializer
-    permission_classes = (AllowAny,)
+    print()
 
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        valid = serializer.is_valid(raise_exception=True)
+    def get(self, request):
+        serializer = self.serializer_class(self.request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-        if valid:
-            status_code = status.HTTP_200_OK
+    def update(self, request, *args, **kwargs):
+        partial = True
+        data = request.data
+        qs = AuthUser.objects.filter(id=request.user.id)
+        serializer = self.serializer_class(qs, data=data, many=True, partial=True)
 
-            response = {
-                'success': True,
-                'statusCode': status_code,
-                'message': 'AuthUser logged in successfully',
-                'access': serializer.data['access'],
-                'refresh': serializer.data['refresh'],
-                'authenticatedUser': {
-                    'email': serializer.data['email'],
-                    'role': serializer.data['role']
-                }
-            }
+        if serializer.is_valid():
+            serializer.save()
 
-            return Response(response, status=status_code)
+            return Response(serializer.data)
 
 
-class UserListView(APIView):
+class UserListView(generics.ListAPIView):
     """
     用户名单提取api接口
     """
     serializer_class = UserListSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        # user = request.user
-        # if user.role != 1:
-        #     response = {
-        #         'success': False,
-        #         'status_code': status.HTTP_403_FORBIDDEN,
-        #         'message': 'You are not authorized to perform this action'
-        #     }
-        #     return Response(response, status.HTTP_403_FORBIDDEN)
-        # else:
-        users = AuthUser.objects.all()
-        serializer = self.serializer_class(users, many=True)
-        response = {
-            'success': True,
-            'status_code': status.HTTP_200_OK,
-            'message': 'Successfully fetched users',
-            'users': serializer.data
-
-        }
-        return Response(response, status=status.HTTP_200_OK)
+    permission_classes = (AllowAny,)
+    queryset = AuthUser.objects.all()

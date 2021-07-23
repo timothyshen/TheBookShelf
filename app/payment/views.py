@@ -32,10 +32,9 @@ class OrderView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
 
-class BillingAddressListView(generics.ListCreateAPIView):
+class BillingAddressListView(generics.ListAPIView):
     serializer_class = BillingAddressSerializer
     queryset = Billing_address.objects.all()
-    permission_classes = [IsAuthenticated]
 
 
 class BillingAddressDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -59,15 +58,16 @@ def create_checkout_session(request):
     if data['plan']:
         price_id = 'price_1J8WjoBaL13HgkoyyGzH3ZBo'
 
-    # # billing_address = BillingAddressSerializer(data['billing'])
+    # billing_address = BillingAddressSerializer(data['billing'])
     gateway = data['gateway']
+    product_type = data['product_type']
     user_profile = User_profile.objects.get(user__in=[data['user']])
     if gateway == 'stripe':
         try:
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=user_profile.user.uid,
-                success_url='http://127.0.0.1:8000/payment/success/?session_id={CHECKOUT_SESSION_ID}',
-                cancel_url='http://127.0.0.1:8000/',
+                success_url='http://127.0.0.1:8000/payment/success/?session_id={CHECKOUT_SESSION_ID}&success=true',
+                cancel_url='http://127.0.0.1:8000/?canceled=true',
                 payment_method_types=['card'],
                 mode='subscription',
                 line_items=[
@@ -80,6 +80,59 @@ def create_checkout_session(request):
             return Response({'sessionId': checkout_session['id']})
         except Exception as e:
             return Response({'error': str(e)})
+
+
+@api_view(['POST'])
+def create_topup_session(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    data = request.data
+    print(request.user)
+    if data['product']:
+        price_id = 'price_1JF4FxBaL13HgkoymjNPtsCs'
+    gateway = data['gateway']
+    product_type = data['product_type']
+    billing_id = create_billing(data['billing_address'])
+    order = {
+        'user_id': request.user.id,
+        'billing_address_id': billing_id
+
+    }
+    print(billing_id)
+    print(order)
+    order_info = OrderSerailzier(data=order)
+    if order_info.is_valid():
+        order_info.save()
+
+    return HttpResponse(status=200)
+    # if gateway == 'stripe' and product_type == 'topup':
+    #     try:
+    #         checkout_session = stripe.checkout.Session.create(
+    #             client_reference_id=user_profile.user.uid,
+    #             success_url='http://127.0.0.1:8000/payment/success/?session_id={CHECKOUT_SESSION_ID}&success=true',
+    #             cancel_url='http://127.0.0.1:8000/?canceled=true',
+    #             payment_method_types=['card'],
+    #             mode='payment',
+    #             line_items=[
+    #                 {
+    #                     'price': price_id,
+    #                     'quantity': 1
+    #                 }
+    #             ]
+    #         )
+    #         return Response({'sessionId': checkout_session['id']})
+    #     except Exception as e:
+    #         return Response({'error': str(e)})
+
+
+def create_billing(billing):
+    serializer = BillingAddressSerializer(data=billing)
+
+    if serializer.is_valid():
+        billing = serializer.save()
+        # print(serializer.data)
+        # print(serializer.data['id'])
+        # billing_address.save()
+        return serializer.data['id']
 
 
 @api_view(['POST'])
