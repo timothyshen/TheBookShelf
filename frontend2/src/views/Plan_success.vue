@@ -23,7 +23,8 @@ export default {
     console.log(localStorage.getItem('session_id'))
     axios
         .post('http://127.0.0.1:8000/api/v1/stripe/check_session/', {
-          'session_id': this.$route.query.session_id
+          'session_id': this.$route.query.session_id,
+          'order_id': this.$route.query.order_id
         })
         .then(response => {
           console.log(response)

@@ -9,18 +9,19 @@
   </section>
     <div class="columns is-centered">
       <div class="column is-half">
-        <div class="notification is-danger" v-if="errors.length">
+        <div class="notification is-danger" v-if="errors.length && isError" >
+          <button class="delete" @click="setClose"></button>
           <p v-for="error in errors" v-bind:key="error">{{ error}}</p>
         </div>
         <form @submit.prevent="toRegister">
           <div class="field">
             <label class="label">Email</label>
             <div class="control has-icons-left has-icons-right">
-              <input class="input is-danger" type="email" placeholder="Email input" v-model="email_address" >
+              <input class="input" type="email" placeholder="Email input" v-model="email_address" >
               <span class="icon is-small is-left">
                 <i class="fas fa-envelope"></i>
               </span>
-              <span class="icon is-small is-right">
+              <span v-show="errors.length" class="icon is-small is-right">
                 <i class="fas fa-exclamation-triangle"></i>
               </span>
             </div>
@@ -34,13 +35,13 @@
           <div class="field">
             <label class="label">Confirm Password</label>
             <div class="control">
-              <input class="input" type="text" placeholder="password" v-model="password2">
+              <input class="input" type="password" placeholder="password" v-model="password2">
             </div>
           </div>
           <div class="field">
             <div class="control">
               <label class="checkbox">
-                <input type="checkbox">
+                <input type="checkbox" v-model="isTCClicked">
                 I agree to the <a href="#">terms and conditions</a>
               </label>
             </div>
@@ -53,7 +54,7 @@
               </a>
             </p>
             <p class="control">
-              <a class="button is-light">
+              <a class="button is-light" @click="backButton">
                 Cancel
               </a>
             </p>
@@ -66,6 +67,7 @@
 
 <script>
 import axios from "axios";
+import {toast} from 'bulma-toast'
 export default {
   name: "registration",
   data() {
@@ -73,10 +75,18 @@ export default {
       email_address: '',
       password:'',
       password2:'',
-      errors:[]
+      errors:[],
+      isError:true,
+      isTCClicked:false
     }
   },
   methods: {
+    setClose(){
+      this.isError = false
+    },
+    backButton(){
+      this.$router.back()
+    },
     async toRegister() {
       if (this.email_address === '') {
         this.errors.push('The email address is missing')
@@ -93,6 +103,9 @@ export default {
       if (this.password !== this.password2) {
         this.errors.push('The password are not matching')
       }
+      if (this.isTCClicked === false) {
+        this.errors.push('Please accept the terms and condition!')
+      }
       if (!this.errors.length) {
         this.$store.commit('setIsLoading', true)
 
@@ -104,8 +117,26 @@ export default {
             .post('http://127.0.0.1:8000/api/v1/register', formData)
             .then((response)=>{
               console.log(response.data)
+              toast({
+                message: 'Account was created, please log in',
+                type: 'is-success',
+                dismissible: true,
+                pauseOnHover: true,
+                duration: 2000,
+                position: 'bottom-right',
+              })
+              this.$router.push('/login')
             })
-            .catch()
+            .catch(error => {
+              if (error.response) {
+                for (const property in error.response.data) {
+                  this.errors.push(`${property}: ${error.response.data[property]}`)
+                }
+              } else if (error.message) {
+                this.errors.push('Something went wrong. Please try again!')
+              }
+            })
+        this.$store.commit('setIsLoading', false)
       }
     }
   },

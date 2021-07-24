@@ -66,15 +66,19 @@ export default {
       // Get user information
       // After the token added to authentication, retrieve user information from server
       await axios
-          .get('http://127.0.0.1:8000/api/v1/users')
+          .get('http://127.0.0.1:8000/api/v1/login/', )
           .then((response) => {
             console.log(response.data)
             this.$store.commit('setUser', {
-              'id': response.data.users[0].id,
-              'username': response.data.users[0].username
+              'id': response.data.id,
+              'username': response.data.username,
+              'email': response.data.email,
+              'role': response.data.role,
+              'icon': response.data.icon
             })
-            localStorage.setItem('username', response.data.users[0].username)
-            localStorage.setItem('userid', response.data.users[0].id)
+            localStorage.setItem('username', response.data.username)
+            localStorage.setItem('userid', response.data.id)
+            localStorage.setItem('email', response.data.email)
             this.$router.push('/')
           }).catch((error) => {
             console.log(error.data)

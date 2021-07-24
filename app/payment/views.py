@@ -19,7 +19,7 @@ from stripe import webhook
 from stripe.api_resources import line_item
 
 from .models import Order, Billing_address
-from .serializers import BillingAddressSerializer, OrderSerailzier, UserSerializer
+from .serializers import BillingAddressSerializer, OrderSerailzier, UserSerializer, OrderDetailSerailzier
 from product.models import User_profile
 from rest_framework.permissions import IsAuthenticated
 
@@ -32,6 +32,12 @@ class OrderView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
 
+class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = OrderDetailSerailzier
+    queryset = Order.objects.all()
+    permission_classes = [IsAuthenticated]
+
+
 class BillingAddressListView(generics.ListAPIView):
     serializer_class = BillingAddressSerializer
     queryset = Billing_address.objects.all()
@@ -39,8 +45,14 @@ class BillingAddressListView(generics.ListAPIView):
 
 class BillingAddressDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BillingAddressSerializer
-    queryset = Billing_address.objects.all()
     permission_classes = [IsAuthenticated]
+    queryset = Billing_address.objects.all()
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        Billing_address.objects.get(pk=instance.id)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 @api_view(['GET'])
@@ -86,52 +98,49 @@ def create_checkout_session(request):
 def create_topup_session(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     data = request.data
-    print(request.user)
-    if data['product']:
-        price_id = 'price_1JF4FxBaL13HgkoymjNPtsCs'
     gateway = data['gateway']
     product_type = data['product_type']
     billing_id = create_billing(data['billing_address'])
     order = {
-        'user_id': request.user.id,
-        'billing_address_id': billing_id
+        'user': request.user.id,
+        'billing_address': billing_id
 
     }
-    print(billing_id)
-    print(order)
     order_info = OrderSerailzier(data=order)
     if order_info.is_valid():
         order_info.save()
-
-    return HttpResponse(status=200)
-    # if gateway == 'stripe' and product_type == 'topup':
-    #     try:
-    #         checkout_session = stripe.checkout.Session.create(
-    #             client_reference_id=user_profile.user.uid,
-    #             success_url='http://127.0.0.1:8000/payment/success/?session_id={CHECKOUT_SESSION_ID}&success=true',
-    #             cancel_url='http://127.0.0.1:8000/?canceled=true',
-    #             payment_method_types=['card'],
-    #             mode='payment',
-    #             line_items=[
-    #                 {
-    #                     'price': price_id,
-    #                     'quantity': 1
-    #                 }
-    #             ]
-    #         )
-    #         return Response({'sessionId': checkout_session['id']})
-    #     except Exception as e:
-    #         return Response({'error': str(e)})
+        print(order_info.data)
+    if gateway == 'stripe' and product_type == 'topup':
+        try:
+            checkout_session = stripe.checkout.Session.create(
+                client_reference_id=order_info.data['uuid'],
+                success_url="http://127.0.0.1:8000/payment/success/?session_id={"
+                            "CHECKOUT_SESSION_ID}&success=true&order_id=%s" % order_info.data['uuid'],
+                cancel_url='http://127.0.0.1:8000/?canceled=true',
+                payment_method_types=['card'],
+                mode='payment',
+                line_items=[
+                    {
+                        'price': data['price_id'],
+                        'quantity': 1
+                    }
+                ]
+            )
+            current_order = Order.objects.get(uuid=checkout_session['client_reference_id'])
+            current_order.payment_intent = checkout_session['payment_intent']
+            current_order.paid_amount = checkout_session['amount_total']
+            current_order.save()
+            print(current_order.data)
+            return Response({'sessionId': checkout_session['id']})
+        except Exception as e:
+            return Response({'error': str(e)})
 
 
 def create_billing(billing):
     serializer = BillingAddressSerializer(data=billing)
 
     if serializer.is_valid():
-        billing = serializer.save()
-        # print(serializer.data)
-        # print(serializer.data['id'])
-        # billing_address.save()
+        serializer.save()
         return serializer.data['id']
 
 
@@ -139,18 +148,18 @@ def create_billing(billing):
 def check_session(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     error = ''
-    print(request.data)
-    print(request.user)
-    print()
+
 
     try:
         user_profile = User_profile.objects.get(user__in=[request.user])
+
         subscription = stripe.Subscription.retrieve(user_profile.stripe_subscription_id)
         product = stripe.Product.retrieve(subscription.plan.product)
         user_profile.plan_status = user_profile.PLAN_ACTIVE
         user_profile.plan_end_date = datetime.fromtimestamp(subscription.current_period_end)
         user_profile.plan = Subscription_Plan.objects.get(title=product.name)
         user_profile.save()
+        Order
         serializer = UserSerializer(user_profile)
         print('serializer', serializer)
         return Response(serializer.data)
@@ -188,7 +197,8 @@ def stripe_webhook(request):
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
 
-        user = User_profile.objects.get(user__uid=session.get('client_reference_id'))
+        order = Order.objects.get(uuid=session.get('client_reference_id'))
+        user = User_profile.objects.get(user_id=order.user_id)
         user.stripe_customer_id = session.get('customer')
         user.stripe_subscription_id = session.get('subscription')
         user.save()

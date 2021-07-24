@@ -31,7 +31,7 @@ class TopUpView(generics.ListAPIView):
 
 class SubscriptionView(generics.ListAPIView):
     serializer_class = SubscriptionSerializer
-    queryset = Subscription_Plan.objects.all()
+    queryset = Subscription_Plan.objects.filter(is_featured=True)
     permission_classes = [AllowAny]
 
 

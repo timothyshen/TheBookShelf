@@ -14,6 +14,7 @@ class Top_up_item(models.Model):
     num_available = models.IntegerField(blank=True, null=True)
     image = models.ImageField(upload_to='uploads/', blank=True, null=True)
     thumbnail = models.ImageField(upload_to='uploads/', blank=True, null=True)
+    price_id = models.CharField(max_length=255)
     date_added = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -32,6 +33,7 @@ class Subscription_Plan(models.Model):
     num_available = models.IntegerField(blank=True, null=True)
     image = models.ImageField(upload_to='uploads/', blank=True, null=True)
     thumbnail = models.ImageField(upload_to='uploads/', blank=True, null=True)
+    price_id = models.CharField(max_length=255)
     date_added = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -11,9 +11,11 @@ export const store = createStore({
       refresh_token: ''
     },
     user: {
-      id: '',
-      username: '',
-
+      username:'',
+      role:'',
+      userid:'',
+      email:'',
+      icon:''
     }
   },
   mutations: {
@@ -23,13 +25,14 @@ export const store = createStore({
         state.token.refresh_token = localStorage.getItem('token_refresh')
         state.isAuthenticated = true
         state.user.username = localStorage.getItem('username')
-        state.user.id = localStorage.getItem('userid')
+        state.user.userid = localStorage.getItem('userid')
+        state.user.email = localStorage.getItem('email')
 
       } else {
         state.token.access_token = ''
         state.token.refresh_token = ''
         state.isAuthenticated = false
-        state.user.id = 0
+        state.user.userid = 0
         state.user.username = ''
 
       }

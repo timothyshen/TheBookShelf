@@ -1,8 +1,116 @@
 <template>
-  <div>
-    <p>1 month plan</p>
-    <button class="button is-danger" @click="subscribe('1 month plan')">Subscribe</button>
+  <div class="container">
+    <section class="hero">
+      <div class="hero-body">
+        <p class="title">
+         - Billing address -
+        </p>
+      </div>
+    </section>
+    <div class="columns is-centered" style="padding: 20px">
+      <div class="column is-three-quarters">
+        <form>
+          <div class="field is-horizontal">
+            <div class="field-label is-normal">
+              <label class="label">Your name</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded has-icons-left">
+                  <input class="input" type="text" placeholder="First name" v-model="billing_address.first_name">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <p class="control is-expanded has-icons-left">
+                  <input class="input" type="text" placeholder="Last name" v-model="billing_address.last_name">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="field is-horizontal">
+            <div class="field-label is-left">
+              <label class="label">Phone</label>
+            </div>
+            <div class="field-body">
+              <div class="field is-expanded">
+                <div class="field has-addons">
+                  <p class="control">
+                    <a class="button is-static">
+                      +44
+                    </a>
+                  </p>
+                  <p class="control is-expanded">
+                    <input class="input" type="tel" placeholder="Your phone number" v-model="billing_address.phone">
+                  </p>
+                </div>
+                <p class="help is-left">Do not enter the first zero</p>
+              </div>
+            </div>
+          </div>
+          <div class="field is-horizontal">
+            <div class="field-label is-left">
+              <label class="label">Address</label>
+            </div>
+            <div class="field-body">
+              <div class="field is-expanded">
+                <div class="control">
+                  <input v-model="billing_address.address" name="address" type="text" placeholder="Line of address" class="input" required="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field is-horizontal">
+            <div class="field-label is-left">
+              <label class="label">Zip code</label>
+            </div>
+            <div class="field-body">
+              <div class="field is-expanded">
+                <div class="control">
+                  <input v-model="billing_address.zipcode" name="zip_code" type="text" placeholder="Zip code" class="input " required="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field is-horizontal">
+            <div class="field-label is-left">
+              <label class="label">Place</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <div class="control">
+                  <input v-model="billing_address.place" name="place" type="text" class="input " required="">
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column" v-for="plan in sub_plan" v-bind:key="plan.id">
+        <div class="card">
+          <p>{{ plan.title }}</p>
+          <p>$ {{ plan.price }}</p>
+          <button class="button is-danger" @click="subscribe('plan','1 month plan', plan.price_id)">Subscribe</button>
+        </div>
+      </div>
+      <div class="column">
+        <div class="card">
+          <p>30 Bookshelf coins</p>
+          <p>$0.99</p>
+          <button class="button is-danger" @click="topup('topup','30 BookShelf coins')">Purchase</button>
+        </div>
+      </div>
+    </div>
+
   </div>
+
 </template>
 
 <script>
@@ -15,7 +123,20 @@ export default {
   data() {
     return {
       pub_key: '',
-      stripe: null
+      stripe: null,
+      billing_address_list:null,
+      billing_address:{
+        first_name:'',
+        last_name:'',
+        email:this.$store.state.user.email,
+        address:'',
+        zipcode:'',
+        place:'',
+        phone:'',
+        user_id:this.$store.state.user.userid
+      },
+      sub_plan:null,
+      product_list:null
     }
   },
   async mounted() {
@@ -23,11 +144,13 @@ export default {
 
     this.stripe = await loadStripe(this.pub_key);
 
+
+
   },
   methods: {
     async getPubKey() {
       this.$store.commit('setIsLoading', true)
-
+      axios.defaults.headers.common['Authorization'] = ''
       await axios
           .get(`http://127.0.0.1:8000/api/v1/stripe/get_stripe_pub_key/`)
           .then(response => {
@@ -37,22 +160,30 @@ export default {
             console.log(error)
           })
 
+      await axios
+          .get('http://127.0.0.1:8000/api/v1/subscription/')
+          .then(response=>{
+            console.log(response.data)
+            this.sub_plan = response.data
+          })
+
       this.$store.commit('setIsLoading', false)
     },
-    async subscribe(plan) {
+    async subscribe(type,plan) {
       this.$store.commit('setIsLoading', true)
 
       const data = {
-        plan: plan,
+        product_type: type,
+        plan:plan,
         gateway: 'stripe',
-        user: 1
+        user: 1,
+        billing_address:this.billing_address
       }
 
-      axios
+      await axios
           .post('http://127.0.0.1:8000/api/v1/stripe/create_checkout_session/', data)
           .then(response => {
             console.log(response.data.sessionId)
-            localStorage.setItem('session_id', response.data.sessionId)
             return this.stripe.redirectToCheckout({sessionId: response.data.sessionId})
           })
           .catch(error => {
@@ -90,6 +221,26 @@ export default {
           })*/
 
       this.$store.commit('setIsLoading', false)
+    },
+    async topup(type, product, id_price) {
+      this.$store.commit('setIsLoading', true)
+
+
+      const data = {
+        product_type: type,
+        product:product,
+        gateway: 'stripe',
+        user: 1,
+        billing_address: this.billing_address,
+        price_id: id_price
+      }
+
+      await axios
+      .post('http://127.0.0.1:8000/api/v1/stripe/create_topup_session/', data)
+      .then(response =>{
+        console.log(response.data)
+        return this.stripe.redirectToCheckout({sessionId: response.data.sessionId})
+      })
     }
   }
 }

@@ -32,13 +32,13 @@ class Billing_address(models.Model):
 
 
 class Order(models.Model):
-    ORDERED = 'ordered'
+    ORDERED = 'unpaid'
     COMPLETED = 'completed'
     CANCELLED = 'cancelled'
     REFUNDED = 'refunded'
 
     STATUS_CHOICES = (
-        (ORDERED, 'Ordered'),
+        (ORDERED, 'unpaid'),
         (COMPLETED, 'completed'),
         (CANCELLED, 'Cancelled'),
         (REFUNDED, 'Refunded')

@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.routers import DefaultRouter
 
 from .views import get_stripe_pub_key, check_session, create_checkout_session, stripe_webhook, create_topup_session, \
-    OrderView, BillingAddressListView, BillingAddressDetailView
+    OrderView, BillingAddressListView, BillingAddressDetailView, OrderDetailView
 
 router = DefaultRouter()
 
@@ -20,7 +20,8 @@ urlpatterns = [
     path('stripe/webhook/', stripe_webhook),
     path('stripe/check_session/', check_session, name='check_session'),
     path('order/', OrderView.as_view(), name='order_create'),
+    path('order/<int:pk>/', OrderDetailView.as_view(), name='order_create'),
     path('billing', BillingAddressListView.as_view(), name='billing_create'),
-    path('billing/<int:pk>', BillingAddressDetailView.as_view(), name='billing_detail'),
+    path('billing/<int:pk>/', BillingAddressDetailView.as_view(), name='billing_detail'),
     path('', include(router.urls)),
 ]
