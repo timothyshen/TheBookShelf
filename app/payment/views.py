@@ -98,6 +98,7 @@ def create_checkout_session(request):
 def create_topup_session(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     data = request.data
+    print(request.user.id)
     gateway = data['gateway']
     product_type = data['product_type']
     billing_id = create_billing(data['billing_address'])
@@ -114,9 +115,9 @@ def create_topup_session(request):
         try:
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=order_info.data['uuid'],
-                success_url="http://127.0.0.1:8000/payment/success/?session_id={"
+                success_url="http://localhost:8081/payment/success?session_id={"
                             "CHECKOUT_SESSION_ID}&success=true&order_id=%s" % order_info.data['uuid'],
-                cancel_url='http://127.0.0.1:8000/?canceled=true',
+                cancel_url='http://localhost:8081/?canceled=true',
                 payment_method_types=['card'],
                 mode='payment',
                 line_items=[
@@ -130,7 +131,7 @@ def create_topup_session(request):
             current_order.payment_intent = checkout_session['payment_intent']
             current_order.paid_amount = checkout_session['amount_total']
             current_order.save()
-            print(current_order.data)
+            print(current_order)
             return Response({'sessionId': checkout_session['id']})
         except Exception as e:
             return Response({'error': str(e)})
@@ -148,18 +149,15 @@ def create_billing(billing):
 def check_session(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     error = ''
-
-
     try:
         user_profile = User_profile.objects.get(user__in=[request.user])
-
         subscription = stripe.Subscription.retrieve(user_profile.stripe_subscription_id)
         product = stripe.Product.retrieve(subscription.plan.product)
         user_profile.plan_status = user_profile.PLAN_ACTIVE
         user_profile.plan_end_date = datetime.fromtimestamp(subscription.current_period_end)
         user_profile.plan = Subscription_Plan.objects.get(title=product.name)
         user_profile.save()
-        Order
+
         serializer = UserSerializer(user_profile)
         print('serializer', serializer)
         return Response(serializer.data)
@@ -169,38 +167,3 @@ def check_session(request):
         return Response({'error': error, 'description': e})
 
 
-@csrf_exempt
-def stripe_webhook(request):
-    stripe.api_key = settings.STRIPE_SECRET_KEY
-    webhook_key = settings.STRIPE_WEBHOOK_KEY
-    payload = request.body
-    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
-    event = None
-    # print('payload', payload)
-
-    try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, webhook_key
-        )
-    except ValueError as e:
-        return HttpResponse(status=400)
-    except stripe.error.SignaturVerificationError as e:
-        return HttpResponse(status=400)
-
-    if event.type == 'payment_intent.succeeded':
-        payment_intent = event.data.object  # contains a stripe.PaymentIntent
-        print('PaymentIntent was successful!')
-    elif event.type == 'payment_method.attached':
-        payment_method = event.data.object  # contains a stripe.PaymentMethod
-        print('PaymentMethod was attached to a Customer!')
-        # ... handle other event types
-    if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
-
-        order = Order.objects.get(uuid=session.get('client_reference_id'))
-        user = User_profile.objects.get(user_id=order.user_id)
-        user.stripe_customer_id = session.get('customer')
-        user.stripe_subscription_id = session.get('subscription')
-        user.save()
-
-    return HttpResponse(status=200)

@@ -56,7 +56,9 @@ INSTALLED_APPS = [
     # customised app
     'user.apps.UserConfig',
     'payment.apps.VipConfig',
-    'product.apps.ProductConfig'
+    'product.apps.ProductConfig',
+    'bookcase.apps.BookcaseConfig',
+    'bookitem.apps.BookitemConfig'
 ]
 
 # Authentication backends
@@ -133,8 +135,6 @@ REST_FRAMEWORK = {
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         'drf_social_oauth2.authentication.SocialAuthentication',
     ),
-    # 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
-    # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 
