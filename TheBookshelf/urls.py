@@ -28,11 +28,10 @@ urlpatterns = [
     path('api/v1/', include('product.urls')),
     path('api/v1/', include('payment.urls')),
     path('api/v1/', include('bookcase.urls')),
+    path('api/v1/', include('bookitem.urls')),
     path('api/auth/', include('rest_framework.urls')),
     path('api-auth/', include('drf_social_oauth2.urls', namespace='drf')),  # ???? namespace='drf' is mandatory
     path(r'', IndexTemplateView.as_view()),
 ]
 
-urlpatterns += [
-    re_path('^.*$', IndexTemplateView.as_view()),
-]
+

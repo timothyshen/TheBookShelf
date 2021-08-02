@@ -66,14 +66,11 @@ class AuthUser(AbstractBaseUser, PermissionsMixin):
     is_deleted = models.BooleanField(default=False)
     created_date = models.DateTimeField(default=timezone.now)
     modified_date = models.DateTimeField(default=timezone.now)
-    created_by = models.EmailField()
-    modified_by = models.EmailField()
 
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name']
-
 
     def __str__(self):
         return "{} - {}".format(self.email, self.username)

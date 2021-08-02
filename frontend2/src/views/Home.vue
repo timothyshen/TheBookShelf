@@ -1,8 +1,8 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
-    <a class="button is-primary">
-      <router-link v-if="$store.state.isAuthenticated" to="/plan">Plan</router-link>
+    <a v-if="$store.state.isAuthenticated" class="button is-primary">
+      <router-link  to="/plan">Plan</router-link>
     </a>
   </div>
 </template>

@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 export default {
   name: "Plan_success",
   data() {
@@ -21,18 +21,18 @@ export default {
   },
   mounted() {
     console.log(localStorage.getItem('session_id'))
-    axios
-        .post('http://127.0.0.1:8000/api/v1/stripe/check_session/', {
-          'session_id': this.$route.query.session_id,
-          'order_id': this.$route.query.order_id
-        })
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => {
-
-          console.log('Error', error)
-          })
+  //   axios
+  //       .post('http://127.0.0.1:8000/api/v1/stripe/check_session/', {
+  //         'session_id': this.$route.query.session_id,
+  //         'order_id': this.$route.query.order_id
+  //       })
+  //       .then(response => {
+  //         console.log(response)
+  //       })
+  //       .catch(error => {
+  //
+  //         console.log('Error', error)
+  //         })
   }
 }
 </script>

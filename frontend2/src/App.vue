@@ -16,7 +16,7 @@ export default {
   beforeCreate() {
     this.$store.commit('initializeStore')
 
-    if (this.$store.state.token) {
+    if (this.$store.state.token.access_token) {
       axios.defaults.headers.common['Authorization'] = "Bearer " + this.$store.state.token.access_token
     } else {
       axios.defaults.headers.common['Authorization'] = ""

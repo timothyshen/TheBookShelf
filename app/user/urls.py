@@ -16,5 +16,6 @@ from .views import (
 urlpatterns = [
     path('register/', AuthUserRegisterView.as_view(), name='register'),
     path('login/', AuthUserLoginView.as_view(), name='login'),
-    path('users/', UserListView.as_view(), name='user')
+    path('users/', UserListView.as_view(), name='user'),
+    # path('login/author')
 ]

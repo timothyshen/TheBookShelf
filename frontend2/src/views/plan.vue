@@ -150,7 +150,7 @@ export default {
   methods: {
     async getPubKey() {
       this.$store.commit('setIsLoading', true)
-      axios.defaults.headers.common['Authorization'] = ''
+
       await axios
           .get(`http://127.0.0.1:8000/api/v1/stripe/get_stripe_pub_key/`)
           .then(response => {
@@ -225,16 +225,16 @@ export default {
     async topup(type, product, id_price) {
       this.$store.commit('setIsLoading', true)
 
-
+      console.log(id_price)
       const data = {
         product_type: type,
         product:product,
         gateway: 'stripe',
         user: 1,
         billing_address: this.billing_address,
-        price_id: id_price
+        price_id: 'price_1JF4FxBaL13HgkoymjNPtsCs'
       }
-
+      console.log(data)
       await axios
       .post('http://127.0.0.1:8000/api/v1/stripe/create_topup_session/', data)
       .then(response =>{
