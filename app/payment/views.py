@@ -19,7 +19,7 @@ from stripe import webhook
 from stripe.api_resources import line_item
 
 from .models import Order, Billing_address
-from .serializers import BillingAddressSerializer, OrderSerailzier, UserSerializer, OrderDetailSerailzier
+from .serializers import BillingAddressSerializer, OrderSerailzier, PaymentUserSerializer, OrderDetailSerailzier
 from product.models import User_profile
 from rest_framework.permissions import IsAuthenticated
 
@@ -158,7 +158,7 @@ def check_session(request):
         user_profile.plan = Subscription_Plan.objects.get(title=product.name)
         user_profile.save()
 
-        serializer = UserSerializer(user_profile)
+        serializer = PaymentUserSerializer(user_profile)
         print('serializer', serializer)
         return Response(serializer.data)
     except Exception as e:

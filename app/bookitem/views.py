@@ -4,17 +4,15 @@ from django.db.models import Sum
 from django.db.models.functions import Coalesce
 from django.http import Http404
 from rest_framework import status
-from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view
-from rest_framework.generics import (ListCreateAPIView, ListAPIView,
-                                     RetrieveAPIView)
-from rest_framework.mixins import RetrieveModelMixin
-from rest_framework.permissions import AllowAny
+from rest_framework.generics import (ListAPIView,
+                                     RetrieveAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView, ListCreateAPIView)
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
-from .permissions import IsAuthorPermission
-from .serializers import *
+
+from .models import Book, BookCategory, Chapter
+from .serializers import BookSerializer, CategorySerializer, ChapterSerializer
 
 
 # Create your views here.
@@ -58,7 +56,7 @@ class BookDetailView(RetrieveAPIView):
 
 class ChapterDetailView(RetrieveAPIView):
     serializer_class = ChapterSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny, ]
 
     def get_object(self):
         return Chapter.objects.get(book_id=self.kwargs.get('book_id', None), id=self.kwargs.get('chapter_id', None))
@@ -87,6 +85,9 @@ class AuthorBookViewSet(APIView):
 
 
 class AuthorBookDetailView(APIView):
+    serializer_class = BookSerializer
+
+    # permission_classes = (IsAuthorPermission,)
 
     def get_object(self, pk):
         try:
@@ -113,12 +114,34 @@ class AuthorBookDetailView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class TopBookValueViewSet(ListAPIView):
-    serializer_class = BookSerializer
+class AuthorChapterView(APIView):
+    serializer_class = ChapterSerializer
+
+    # permission_classes = (IsAuthorPermission,)
+
+    def get(self, request, format=None):
+        chapter = Chapter.objects.filter(book_id=self.request.query_params.get('book_id', None))
+        serializer = self.serializer_class(data=chapter)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AuthorChapterDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = ChapterSerializer
+
+    # permission_classes = (IsAuthorPermission,)
 
     def get_queryset(self):
-        request_item = self.kwargs.get('request_item', None)
-        return Book.objects.annotate(Count(request_item)).order_by('-' + request_item)[:10]
+        return Chapter.objects.get(book_id=self.kwargs.get('book_id', None), id=self.kwargs.get('chapter_id', None))
+
+
+#
 
 
 @api_view(['POST'])

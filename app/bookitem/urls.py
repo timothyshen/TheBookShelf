@@ -8,17 +8,24 @@ from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.routers import DefaultRouter
 
-from bookitem.views import BookCategoryDetailView, BookListView, BookDetailView, AuthorBookViewSet, \
-    AuthorBookDetailView, TopBookByAttribute, TopBookByCategory
+from .views import BookCategoryDetailView, BookListView, BookDetailView, AuthorBookViewSet, AuthorBookDetailView, \
+    TopBookByAttribute, TopBookByCategory, AuthorChapterView, ChapterDetailView, ChapterListView, \
+    AuthorChapterDetailView
 
 router = DefaultRouter()
 
 urlpatterns = [
     path('all-category', BookCategoryDetailView.as_view(), name='all-category'),
-    path('detail', BookListView.as_view(), name='book-list'),
-    path('detail/<int:pk>', BookDetailView.as_view(), name='book-detail'),
+    path('book', BookListView.as_view(), name='book-list'),
+    path('book/<int:pk>', BookDetailView.as_view(), name='book-detail'),
+    path('book/<int:book_id>/chapter', ChapterListView.as_view(), name='book-chapter'),
+    path('book/<int:book_id>/chapter/<int:chapter_id>', ChapterDetailView.as_view(), name='book-chapter'),
     path('author/book/', AuthorBookViewSet.as_view(), name="author-book"),
-    path('author/book/<int:pk>/', AuthorBookDetailView.as_view(), name='author-detail'),
+    path('author/book/<int:pk>/', AuthorBookDetailView.as_view(), name='author-book-detail'),
+    path('author/book/<int:book_id>/chapter', AuthorChapterView.as_view(), name='author-chapter-list'),
+    path('author/book/<int:book_id>/chapter/<int:chapter_id>', AuthorChapterDetailView.as_view(),
+         name='author-chapter-detail'),
+    # path('book/comment', CommentPublicView.as_view(), name="book-comment-list"),
     path('ranking/attribute/', TopBookByAttribute, name='ranking-attribute'),
     path('ranking/category/', TopBookByCategory, name='ranking-category'),
 ]

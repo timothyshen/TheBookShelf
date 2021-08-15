@@ -14,6 +14,8 @@ from pathlib import Path
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from rest_framework.schemas import coreapi
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ADD THESE TWO LINES
@@ -53,12 +55,16 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'social_django',
     'drf_social_oauth2',
+    'coreapi',
+    'djoser',
+    'drf_yasg',
     # customised app
     'user.apps.UserConfig',
     'payment.apps.VipConfig',
     'product.apps.ProductConfig',
     'bookcase.apps.BookcaseConfig',
-    'bookitem.apps.BookitemConfig'
+    'bookitem.apps.BookitemConfig',
+    'comment.apps.CommentConfig'
 ]
 
 # Authentication backends
@@ -86,7 +92,7 @@ SOCIAL_AUTH_FACEBOOK_SECRET = '406d68e8f9d94582cb57b03a045c79ee'
 # Email is not sent by default, to get it, you must request the email permission.
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-  'fields': 'id, name, email'
+    'fields': 'id, name, email'
 }
 SOCIAL_AUTH_USER_FIELDS = ['email', 'username', 'first_name', 'password']
 # Google
@@ -97,9 +103,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
-
-
-
 
 # site id
 SITE_ID = 1
@@ -116,7 +119,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
 # corsheader whitelist
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:8000",
@@ -132,12 +134,15 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         'drf_social_oauth2.authentication.SocialAuthentication',
     ),
+    'DEFAULT_SCHEMA_CLASS': (
+        'rest_framework.schemas.coreapi.AutoSchema',
+    )
 }
-
 
 ROOT_URLCONF = 'TheBookshelf.urls'
 

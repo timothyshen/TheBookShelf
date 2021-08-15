@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import Book, BookCategory, Chapter, Comment
+from rest_framework.fields import SerializerMethodField
+
+from .models import Book, BookCategory, Chapter
 from .filters import CustomerHyperlink
 
 
@@ -43,7 +45,3 @@ class BookSerializer(serializers.ModelSerializer):
         return rep
 
 
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = '__all__'

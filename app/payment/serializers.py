@@ -9,7 +9,7 @@ from product.models import Subscription_Plan, Top_up_item
 from rest_framework import serializers
 
 
-class UserSerializer(serializers.ModelSerializer):
+class PaymentUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = AuthUser
         fields = (
@@ -42,7 +42,7 @@ class TopUpSerializer(serializers.ModelSerializer):
 
 
 class BillingAddressSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = PaymentUserSerializer(read_only=True)
 
     class Meta:
         model = Billing_address
@@ -50,7 +50,7 @@ class BillingAddressSerializer(serializers.ModelSerializer):
 
 
 class OrderDetailSerailzier(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = PaymentUserSerializer()
     billing_address = BillingAddressSerializer()
 
     class Meta:

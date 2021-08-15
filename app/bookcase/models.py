@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 from bookitem.models import Chapter
 from user.models import AuthUser
+from bookitem.models import Book
 
 
 class BookMark(models.Model):
@@ -22,7 +23,7 @@ class BookMark(models.Model):
 
 class Bookcase(models.Model):
     user = models.ForeignKey(AuthUser, on_delete=models.CASCADE, verbose_name='User bookcase')
-    # book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name='Book', blank=True, null=True)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name='Book', blank=True, null=True)
     bookmark = models.ForeignKey(BookMark, on_delete=models.CASCADE, verbose_name='bookmark',
                                  related_name='marked_book', blank=True, null=True)
     add_time = models.DateTimeField(auto_now_add=True, verbose_name=u"Added time")

@@ -3,6 +3,8 @@ from datetime import timezone
 from django.db import models
 
 # Create your models here.
+from django.urls import reverse
+
 from TheBookshelf import settings
 from user.models import AuthUser
 
@@ -81,6 +83,7 @@ class Chapter(models.Model):
     created_time = models.DateTimeField(verbose_name='Created time', auto_now_add=True, editable=False)
     last_update = models.DateTimeField(verbose_name='last update', auto_now=True, editable=False)
     publish_status = models.CharField(choices=PUBLISH_STATUS, default='Published', max_length=150)
+    is_vip = models.BooleanField(verbose_name='VIP chapter', default=False)
     book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name='chapter', null=True, related_name='chapter')
 
     def __str__(self):
@@ -91,17 +94,4 @@ class Chapter(models.Model):
         verbose_name = 'chapter'
         verbose_name_plural = 'chapters'
 
-
-class Comment(models.Model):
-    comment = models.TextField()
-    created_on = models.DateTimeField(verbose_name='Created time', auto_now_add=True, editable=False)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='book_commnet')
-    author = models.ForeignKey(AuthUser, on_delete=models.CASCADE)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, related_name='replies')
-    likes = models.ManyToManyField(AuthUser, blank=True, related_name='comment_likes')
-    dislikes = models.ManyToManyField(AuthUser, blank=True, related_name='comment_dislikes')
-
-    class Meta:
-        db_table = 'Comment'
-        verbose_name = 'comment'
-        verbose_name_plural = 'comments'
+#

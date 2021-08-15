@@ -7,9 +7,11 @@ from django.urls import path, include
 from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.routers import DefaultRouter
+from .views import BookcaseView, BookMarkView
 
 router = DefaultRouter()
 
 urlpatterns = [
-
+    path('bookcase/add/', BookcaseView.as_view(), name='bookshelf'),
+    path('bookmark/add', BookMarkView.as_view(), name='bookmark')
 ]
