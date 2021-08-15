@@ -1,0 +1,1 @@
+curl -X POST -d "client_id=rAR0ef1StYXJDaEjDQMT7i5MuF7PhSZ1qY5cFD0S&client_secret=YcEykooagJTwYYj4I0yhk5xnNwBJOtCKkBsjdFUTkp40eVWrjTNrydhVbhBnCs93niVxoXXCZXnlhLrNRdsyv3ayzJJOgSxeBOh13iFHa91I45U47RQFxsKNxpibutiB&grant_type=password&username=timothyshen1@hotmail.com&password=Shen64727882" http://localhost:8000/api-auth/token
