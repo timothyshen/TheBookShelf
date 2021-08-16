@@ -1,5 +1,6 @@
 import json
 
+from django.contrib import messages
 from django.views.decorators.http import require_POST
 from rest_framework.serializers import Serializer
 import stripe
@@ -13,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from stripe import webhook
@@ -133,6 +135,37 @@ def create_topup_session(request):
             current_order.save()
             print(current_order)
             return Response({'sessionId': checkout_session['id']})
+
+        except stripe.error.CardError as e:
+            body = e.json_body
+            err = body.get('error', {})
+            return Response({"message": f"{err.get('message')}"}, status=HTTP_400_BAD_REQUEST)
+
+        except stripe.error.RateLimitError as e:
+            # Too many requests made to the API too quickly
+            messages.warning(request, "Rate limit error")
+            return Response({"message": "Rate limit error"}, status=HTTP_400_BAD_REQUEST)
+
+        except stripe.error.InvalidRequestError as e:
+            print(e)
+            # Invalid parameters were supplied to Stripe's API
+            return Response({"message": "Invalid parameters"}, status=HTTP_400_BAD_REQUEST)
+
+        except stripe.error.AuthenticationError as e:
+            # Authentication with Stripe's API failed
+            # (maybe you changed API keys recently)
+            return Response({"message": "Not authenticated"}, status=HTTP_400_BAD_REQUEST)
+
+        except stripe.error.APIConnectionError as e:
+            # Network communication with Stripe failed
+            return Response({"message": "Network error"}, status=HTTP_400_BAD_REQUEST)
+
+        except stripe.error.StripeError as e:
+            # Display a very generic error to the user, and maybe send
+            # yourself an email
+            return Response({"message": "Something went wrong. You were not charged. Please try again."},
+                            status=HTTP_400_BAD_REQUEST)
+
         except Exception as e:
             return Response({'error': str(e)})
 

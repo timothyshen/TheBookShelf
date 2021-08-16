@@ -46,11 +46,11 @@ def stripe_webhook(request):
         # ... handle other event types
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
+        order = Order.objects.get(uuid=session.get('client_reference_id'))
+        user = User_profile.objects.get(user_id=order.user_id)
+        user.stripe_customer_id = session.get('customer')
         if session.get('subscription'):
-            order = Order.objects.get(uuid=session.get('client_reference_id'))
-            user = User_profile.objects.get(user_id=order.user_id)
-            user.stripe_customer_id = session.get('customer')
             user.stripe_subscription_id = session.get('subscription')
-            user.save()
+        user.save()
 
     return HttpResponse(status=200)

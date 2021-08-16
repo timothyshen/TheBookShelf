@@ -37,9 +37,19 @@ class AllUsers(generics.ListAPIView):
     serializer_class = UsersSerializer
 
 
-class CurrentUser(APIView):
+class ReaderLoginView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
         serializer = UsersSerializer(self.request.user)
         return Response(serializer.data)
+
+
+class AuthorLoginView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        serializer = UsersSerializer(self.request.user)
+        if serializer.data['role'] == 2:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({'message': "You need to be an Author in order to log in"}, status=status.HTTP_400_BAD_REQUEST)
