@@ -47,7 +47,7 @@ class Order(models.Model):
     user = models.ForeignKey(AuthUser, related_name='orders', on_delete=models.SET_NULL, blank=True, null=True)
     billing_address = models.ForeignKey(Billing_address, related_name='orders', on_delete=models.SET_NULL, blank=True,
                                         null=True)
-
+    product_name = models.CharField(default='', max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
     paid = models.BooleanField(default=False)

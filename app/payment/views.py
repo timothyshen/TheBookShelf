@@ -1,31 +1,19 @@
-import json
-
-from django.contrib import messages
-from django.views.decorators.http import require_POST
-from rest_framework.serializers import Serializer
-import stripe
 from datetime import datetime
 
+import stripe
 from django.conf import settings
-from django.contrib.auth.models import User
-from django.http import Http404, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-
-from rest_framework import generics, status
+from django.contrib import messages
+from rest_framework import generics
 from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
-from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
-from stripe import webhook
-from stripe.api_resources import line_item
 
+from product.models import Subscription_Plan, Top_up_item
+from product.models import User_profile
 from .models import Order, Billing_address
 from .serializers import BillingAddressSerializer, OrderSerailzier, PaymentUserSerializer, OrderDetailSerailzier
-from product.models import User_profile
-from rest_framework.permissions import IsAuthenticated
-
-from product.models import Subscription_Plan
+from .Price_id import filter_product
 
 
 class OrderView(generics.ListCreateAPIView):
@@ -69,20 +57,17 @@ def create_checkout_session(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     data = request.data
     print(data)
-    if data['plan']:
-        price_id = 'price_1J8WjoBaL13HgkoyyGzH3ZBo'
-
-    # billing_address = BillingAddressSerializer(data['billing'])
+    billing_address = BillingAddressSerializer(data['billing'])
     gateway = data['gateway']
-    product_type = data['product_type']
     user_profile = User_profile.objects.get(user__in=[data['user']])
+    price_id = filter_product(data['product'])
     if gateway == 'stripe':
         try:
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=user_profile.user.uid,
                 success_url='http://127.0.0.1:8000/payment/success/?session_id={CHECKOUT_SESSION_ID}&success=true',
                 cancel_url='http://127.0.0.1:8000/?canceled=true',
-                payment_method_types=['card'],
+                payment_method_types=data['type'],
                 mode='subscription',
                 line_items=[
                     {
@@ -101,27 +86,44 @@ def create_topup_session(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     data = request.data
     print(request.user.id)
+    userprofile = User_profile.objects.get(user__in=[request.user])
     gateway = data['gateway']
-    product_type = data['product_type']
     billing_id = create_billing(data['billing_address'])
     order = {
         'user': request.user.id,
-        'billing_address': billing_id
+        'billing_address': billing_id,
+        'product_name': data['product']
 
     }
+    price_id = filter_product(data['product'])
     order_info = OrderSerailzier(data=order)
     if order_info.is_valid():
         order_info.save()
         print(order_info.data)
-    if gateway == 'stripe' and product_type == 'topup':
+    if gateway == 'stripe':
+        if userprofile.stripe_customer_id != '' and userprofile.stripe_customer_id is not None:
+            customer = stripe.Customer.retrieve(
+                userprofile.stripe_customer_id)
+            customer.sources.create(source=stripe.api_key)
+
+        else:
+            customer = stripe.Customer.create(
+                email=request.user.email,
+            )
+            customer.sources.create(source=stripe.api_key)
+            userprofile.stripe_customer_id = customer['id']
+            userprofile.save()
+
         try:
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=order_info.data['uuid'],
                 success_url="http://localhost:8081/payment/success?session_id={"
-                            "CHECKOUT_SESSION_ID}&success=true&order_id=%s" % order_info.data['uuid'],
+                            "CHECKOUT_SESSION_ID}&success=true&order_id=%s&type=%s" % (
+                            order_info.data['uuid'], data['type']),
                 cancel_url='http://localhost:8081/?canceled=true',
                 payment_method_types=['card'],
-                mode='payment',
+                mode=data['type'],
+                customer=userprofile.stripe_customer_id,
                 line_items=[
                     {
                         'price': data['price_id'],
@@ -184,11 +186,16 @@ def check_session(request):
     error = ''
     try:
         user_profile = User_profile.objects.get(user__in=[request.user])
-        subscription = stripe.Subscription.retrieve(user_profile.stripe_subscription_id)
-        product = stripe.Product.retrieve(subscription.plan.product)
-        user_profile.plan_status = user_profile.PLAN_ACTIVE
-        user_profile.plan_end_date = datetime.fromtimestamp(subscription.current_period_end)
-        user_profile.plan = Subscription_Plan.objects.get(title=product.name)
+        if request.data['type'] == 'subscription':
+            subscription = stripe.Subscription.retrieve(user_profile.stripe_subscription_id)
+            product = stripe.Product.retrieve(subscription.plan.product)
+            user_profile.plan_status = user_profile.PLAN_ACTIVE
+            user_profile.plan_end_date = datetime.fromtimestamp(subscription.current_period_end)
+            user_profile.plan = Subscription_Plan.objects.get(title=product.name)
+        elif request.data['type'] == 'payment':
+            order = Order.objects.get(id=request.data['order_id'])
+            coin_value = Top_up_item.objects.get(order.product_name)
+            user_profile.balance += coin_value.book_coin
         user_profile.save()
 
         serializer = PaymentUserSerializer(user_profile)
@@ -198,5 +205,3 @@ def check_session(request):
         error = 'There something wrong. Please try again!'
 
         return Response({'error': error, 'description': e})
-
-
