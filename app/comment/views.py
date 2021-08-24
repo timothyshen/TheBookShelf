@@ -19,13 +19,15 @@ class CommentPublicView(ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-# class CommentDetailAPIView(RetrieveUpdateDestroyAPIView):
-#     queryset = Comment.objects.filter(id__gte=0)
-#     serializer_class = CommentDetailSerializer
-#     permission_classes = [IsOwnerOrReadOnly]
-#
-#     def put(self, request, *args, **kwargs):
-#         return self.update(request, *args, **kwargs)
-#
-#     def delete(self, request, *args, **kwargs):
-#         return self.destroy(request, *args, **kwargs)
+
+class CommentDetailAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Comment.objects.filter(id__gte=0)
+    serializer_class = CommentSerializer
+
+    # permission_classes = [IsOwnerOrReadOnly]
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
