@@ -22,7 +22,7 @@ class OrderView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
 
-class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
+class OrderDetailView(generics.RetrieveAPIView):
     serializer_class = OrderDetailSerailzier
     queryset = Order.objects.all()
     permission_classes = [IsAuthenticated]

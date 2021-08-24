@@ -38,11 +38,4 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User_profile
-        fields = (
-            "id",
-            'user',
-            "Balance",
-            "plan",
-            "plan_status",
-            "plan_end_date"
-        )
+        fields = "__all__"

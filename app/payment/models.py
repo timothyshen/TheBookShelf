@@ -35,13 +35,11 @@ class Order(models.Model):
     ORDERED = 'unpaid'
     COMPLETED = 'completed'
     CANCELLED = 'cancelled'
-    REFUNDED = 'refunded'
 
     STATUS_CHOICES = (
         (ORDERED, 'unpaid'),
         (COMPLETED, 'completed'),
         (CANCELLED, 'Cancelled'),
-        (REFUNDED, 'Refunded')
     )
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True, editable=False)
     user = models.ForeignKey(AuthUser, related_name='orders', on_delete=models.SET_NULL, blank=True, null=True)
