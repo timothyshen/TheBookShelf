@@ -51,5 +51,4 @@ urlpatterns = [
     ),
     path('api/auth/', include('rest_framework.urls')),
     path('api-auth/', include('drf_social_oauth2.urls', namespace='drf')),
-    path(r'', IndexTemplateView.as_view()),
 ]

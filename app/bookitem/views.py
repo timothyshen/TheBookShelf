@@ -62,74 +62,27 @@ class ChapterDetailView(RetrieveAPIView):
         return Chapter.objects.get(book_id=self.kwargs.get('book_id', None), id=self.kwargs.get('chapter_id', None))
 
 
-class AuthorBookViewSet(APIView):
+class AuthorBookViewSet(ListCreateAPIView):
     serializer_class = BookSerializer
 
     # permission_classes = (IsAuthorPermission,)
-
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def get(self, request):
-        print(request.user)
-        try:
-            book = Book.objects.filter(book_author=self.request.user.id)
-            serializers_book = BookSerializer(Book)
-            return Response(serializers_book.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'message': 'you are not an author'})
+    def get_queryset(self):
+        return Book.objects.filter(book_author=self.request.user)
 
 
-class AuthorBookDetailView(APIView):
+class AuthorBookDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = BookSerializer
-
+    queryset = Book.objects.all()
     # permission_classes = (IsAuthorPermission,)
 
-    def get_object(self, pk):
-        try:
-            return Book.objects.get(pk=pk)
-        except Book.DoesNotExist:
-            raise Http404
 
-    def get(self, request, pk, format=None):
-        book = self.get_object(pk)
-        serializer = BookSerializer(book)
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
-        book = self.get_object(pk)
-        serializer = BookSerializer(book, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        book = self.get_object(pk)
-        book.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class AuthorChapterView(APIView):
+class AuthorChapterView(ListCreateAPIView):
     serializer_class = ChapterSerializer
 
     # permission_classes = (IsAuthorPermission,)
 
-    def get(self, request, format=None):
-        chapter = Chapter.objects.filter(book_id=self.request.query_params.get('book_id', None))
-        serializer = self.serializer_class(data=chapter)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def post(self, request, format=None):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get_queryset(self):
+        return Chapter.objects.filter(book_id=self.kwargs.get('book_id', None))
 
 
 class AuthorChapterDetailView(RetrieveUpdateDestroyAPIView):
