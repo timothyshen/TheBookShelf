@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Book, BookCategory, Chapter
-from .serializers import BookSerializer, CategorySerializer, ChapterSerializer
+from .serializers import BookSerializer, CategorySerializer, ChapterSerializer, AuthorChapterDetailSerializer
 
 
 # Create your views here.
@@ -77,7 +77,7 @@ class AuthorBookDetailView(RetrieveUpdateDestroyAPIView):
 
 
 class AuthorChapterView(ListCreateAPIView):
-    serializer_class = ChapterSerializer
+    serializer_class = AuthorChapterDetailSerializer
 
     # permission_classes = (IsAuthorPermission,)
 
@@ -86,7 +86,7 @@ class AuthorChapterView(ListCreateAPIView):
 
 
 class AuthorChapterDetailView(RetrieveUpdateDestroyAPIView):
-    serializer_class = ChapterSerializer
+    serializer_class = AuthorChapterDetailSerializer
     # permission_classes = (IsAuthorPermission,)
 
     def get_object(self):

@@ -45,3 +45,9 @@ class BookSerializer(serializers.ModelSerializer):
     #     rep = super(BookSerializer, self).to_representation(instance)
     #     rep['book_type'] = instance.book_type.category_name
     #     return rep
+
+
+class AuthorChapterDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chapter
+        fields = '__all__'
