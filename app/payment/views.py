@@ -56,35 +56,6 @@ def get_stripe_pub_key(request):
 def create_checkout_session(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     data = request.data
-    print(data)
-    billing_address = BillingAddressSerializer(data['billing'])
-    gateway = data['gateway']
-    user_profile = User_profile.objects.get(user__in=[data['user']])
-    price_id = filter_product(data['product'])
-    if gateway == 'stripe':
-        try:
-            checkout_session = stripe.checkout.Session.create(
-                client_reference_id=user_profile.user.uid,
-                success_url='http://127.0.0.1:8000/payment/success/?session_id={CHECKOUT_SESSION_ID}&success=true',
-                cancel_url='http://127.0.0.1:8000/?canceled=true',
-                payment_method_types=data['type'],
-                mode='subscription',
-                line_items=[
-                    {
-                        'price': price_id,
-                        'quantity': 1
-                    }
-                ]
-            )
-            return Response({'sessionId': checkout_session['id']})
-        except Exception as e:
-            return Response({'error': str(e)})
-
-
-@api_view(['POST'])
-def create_topup_session(request):
-    stripe.api_key = settings.STRIPE_SECRET_KEY
-    data = request.data
     print(request.user.id)
     userprofile = User_profile.objects.get(user__in=[request.user])
     gateway = data['gateway']

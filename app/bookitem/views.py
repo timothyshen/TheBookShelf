@@ -87,10 +87,9 @@ class AuthorChapterView(ListCreateAPIView):
 
 class AuthorChapterDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = ChapterSerializer
-
     # permission_classes = (IsAuthorPermission,)
 
-    def get_queryset(self):
+    def get_object(self):
         return Chapter.objects.get(book_id=self.kwargs.get('book_id', None), id=self.kwargs.get('chapter_id', None))
 
 
