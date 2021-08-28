@@ -26,6 +26,6 @@ urlpatterns = [
     path('author/book/<int:book_id>/chapter/<int:chapter_id>', AuthorChapterDetailView.as_view(),
          name='author-chapter-detail'),
     # path('book/comment', CommentPublicView.as_view(), name="book-comment-list"),
-    path('ranking/attribute/', TopBookByAttribute, name='ranking-attribute'),
-    path('ranking/category/', TopBookByCategory, name='ranking-category'),
+    path('ranking/attribute/', TopBookByAttribute.as_view(), name='ranking-attribute'),
+    path('ranking/category/', TopBookByCategory.as_view(), name='ranking-category'),
 ]

@@ -13,5 +13,5 @@ router = DefaultRouter()
 
 urlpatterns = [
     path('bookcase/add/', BookcaseView.as_view(), name='bookshelf'),
-    path('bookmark/add', BookMarkView.as_view(), name='bookmark')
+    path('bookmark/add/', BookMarkView.as_view(), name='bookmark')
 ]

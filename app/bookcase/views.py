@@ -15,7 +15,7 @@ from .serializer import *
 
 # Create your views here.
 class BookcaseView(ListCreateAPIView):
-    permission_classes = IsAuthenticated
+    permission_classes = [IsAuthenticated, ]
     serializer_class = BookCaseSerializer
 
     def get_queryset(self):
@@ -25,4 +25,4 @@ class BookcaseView(ListCreateAPIView):
 class BookMarkView(CreateAPIView):
     serializer_class = BookMarkSerializer
     queryset = BookMark.objects.all()
-    permission_classes = IsAuthenticated
+    permission_classes = [IsAuthenticated, ]
