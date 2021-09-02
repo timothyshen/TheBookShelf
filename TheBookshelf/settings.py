@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'social_django',
     'drf_social_oauth2',
     'drf_yasg',
+    'notifications',
     # customised app
     'user.apps.UserConfig',
     'payment.apps.VipConfig',
@@ -107,7 +108,7 @@ ROOT_URLCONF = 'TheBookshelf.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'Templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
