@@ -1,0 +1,17 @@
+<div class="panel-body">
+    {% for i in request.user.notifications.all %}
+        <ui style="list-style-type:none">
+        <li><h4>{{ i.timestamp }}</h4>{{ i.verb|safe }}</li>
+        </ui>
+     {% empty %}
+        <p>暂未收到消息</p>
+    {% endfor %}
+</div>
+<li><a href="#">欢迎：{{ user.username }}</a></li>
+{% load notifications_tags %}
+    {% notifications_unread as unread_count %}
+    {% if unread_count %}
+         <li><a href="{% url 'inbox' %}">消息中心({{ unread_count }})</a></li>
+    {% else %}
+         <li><a href="{% url 'inbox' %}">消息中心(0)</a></li>
+    {% endif %}
