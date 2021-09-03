@@ -30,8 +30,9 @@ SECRET_KEY = 'django-insecure-hu3_1d29+@zz0t^g59miaqx%1#o7#v^c8#7eupfy-n#x0y)b=x
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+ALLOWED_HOSTS = ['*']
+INTERNAL_IPS = ['127.0.0.1']
 
-ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'user.AuthUser'
 
 # Application definition
@@ -188,12 +189,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
-
+VITE_APP_DIR = os.path.join(BASE_DIR, 'interface/src')
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, "static"),
-# ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(VITE_APP_DIR, 'dist')
+]
 
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -215,7 +216,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 EMAIL_SUBJECT_PREFIX = '[Wagtail] '
 
-INTERNAL_IPS = ('127.0.0.1')
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
