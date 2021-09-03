@@ -9,19 +9,24 @@
           <p class="has-text-grey-dark mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
           <div>
             <a class="mr-3 is-inline-block" href="#">
-              <img class="mx-auto image is-fullwidth" src="assets/bulma-plain-assets/socials/facebook.svg">
+              <img class="mx-auto image is-fullwidth"
+                   src="../views/components/assets/bulma-plain-assets/socials/facebook.svg">
             </a>
             <a class="mr-3 is-inline-block" href="#">
-              <img class="mx-auto image is-fullwidth" src="assets/bulma-plain-assets/socials/github.svg">
+              <img class="mx-auto image is-fullwidth"
+                   src="../views/components/assets/bulma-plain-assets/socials/github.svg">
             </a>
             <a class="mr-3 is-inline-block" href="#">
-              <img class="mx-auto image is-fullwidth" src="assets/bulma-plain-assets/socials/instagram.svg">
+              <img class="mx-auto image is-fullwidth"
+                   src="../views/components/assets/bulma-plain-assets/socials/instagram.svg">
             </a>
             <a class="mr-3 is-inline-block" href="#">
-              <img class="mx-auto image is-fullwidth" src="assets/bulma-plain-assets/socials/linkedin.svg">
+              <img class="mx-auto image is-fullwidth"
+                   src="../views/components/assets/bulma-plain-assets/socials/linkedin.svg">
             </a>
             <a class="is-inline-block" href="#">
-              <img class="mx-auto image is-fullwidth" src="assets/bulma-plain-assets/socials/twitter.svg">
+              <img class="mx-auto image is-fullwidth"
+                   src="../views/components/assets/bulma-plain-assets/socials/twitter.svg">
             </a>
           </div>
         </div>

@@ -1,3 +1,3 @@
-import * as api from './axois';
+import * as api from './axois.js';
 
 export default api;

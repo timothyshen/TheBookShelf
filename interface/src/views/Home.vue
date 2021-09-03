@@ -99,18 +99,17 @@
         </div>
       </div>
     </section>
-    <Footer_component></Footer_component>
+
 
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import Footer_component from "@/views/components/footer_component";
+
 
 export default {
   name: 'Home',
-  components: {Footer_component},
   data() {
     return {
       activeItem: 'monetization'
