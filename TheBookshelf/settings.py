@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'social_django',
     'drf_social_oauth2',
     'drf_yasg',
+    'notifications'
 ]
 
 # site id
