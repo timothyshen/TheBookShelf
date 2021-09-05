@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 
+from bookitem.models import Chapter
 from product.models import Subscription_Plan, Top_up_item
 from product.models import User_profile
 from .models import Order, Billing_address
@@ -176,3 +177,4 @@ def check_session(request):
         error = 'There something wrong. Please try again!'
 
         return Response({'error': error, 'description': e})
+

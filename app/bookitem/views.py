@@ -33,7 +33,7 @@ class ChapterListView(ListAPIView):
 
 
 class BookCategoryDetailView(ListAPIView):
-    queryset = BookCategory.objects.annotate(total_number=Count('books'))
+    queryset = BookCategory.objects.annotate(total_number=Count('genre'))
     serializer_class = CategorySerializer
     permission_classes = [AllowAny]
 

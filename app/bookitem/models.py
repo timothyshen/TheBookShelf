@@ -7,6 +7,8 @@ from django.urls import reverse
 
 from TheBookshelf import settings
 from user.models import AuthUser
+from wagtail.admin.edit_handlers import FieldPanel
+from wagtail.images.edit_handlers import ImageChooserPanel
 
 
 class BookCategory(models.Model):
@@ -33,25 +35,28 @@ class Book(models.Model):
         ('Ongoing', u'Ongoing'),
         ('Completed', u'Completed')
     )
-    book_name = models.CharField(default="", max_length=30, verbose_name='Book name', unique=True)
-    book_image = models.ImageField(default=u"media/image/default.png", max_length=1000, verbose_name='Book image',
-                                   upload_to=image_upload_path, )
-    book_status = models.CharField(choices=BOOK_STATUS, default='Ongoing', verbose_name='Book Status', max_length=150,
-                                   null=True)
-    # contract_status = models.BooleanField()
-    book_author = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                    on_delete=models.SET_NULL,
-                                    verbose_name='author',
-                                    related_name='authored_books',
-                                    null=True)
-    book_type = models.ForeignKey(BookCategory,
-                                  on_delete=models.CASCADE,
-                                  verbose_name='book type',
-                                  related_name='books',
-                                  null=True)
-    # book_genre = models.ForeignKey()
-    book_short_description = models.TextField(verbose_name='Short description', default='')
-    book_description = models.TextField(verbose_name='Book Description', default='')
+    title = models.CharField(default="", max_length=30, verbose_name='Book title', unique=True)
+    cover_photo = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+    status = models.CharField(choices=BOOK_STATUS, default='Ongoing', verbose_name='Status', max_length=150,
+                              null=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL,
+                               on_delete=models.SET_NULL,
+                               verbose_name='author',
+                               related_name='author',
+                               null=True)
+    genre = models.ForeignKey(BookCategory,
+                              on_delete=models.CASCADE,
+                              verbose_name='book type',
+                              related_name='genre',
+                              null=True)
+    short_description = models.TextField(verbose_name='Short description', default='')
+    description = models.TextField(verbose_name='Book Description', default='')
+
     # non-editable values
     total_vote = models.IntegerField(verbose_name='Total vote', default=0, editable=False)
     total_click = models.IntegerField(verbose_name='Total Click', default=0, editable=False)
@@ -60,15 +65,15 @@ class Book(models.Model):
     last_update = models.DateTimeField(verbose_name='last update', auto_now=True, editable=False)
 
     def __str__(self):
-        return self.book_name
+        return self.title
 
     def get_book_name(self):
-        return self.book_name
+        return self.title
 
     class Meta:
-        db_table = 'Books'
-        verbose_name = 'Novel'
-        verbose_name_plural = verbose_name
+        db_table = 'Book'
+        verbose_name = 'Book'
+        verbose_name_plural = 'Books'
 
 
 class Chapter(models.Model):
@@ -77,17 +82,18 @@ class Chapter(models.Model):
         ('Draft', u'Draft'),
         ('Trash', u'Trash'),
     )
-    chapter_title = models.CharField(verbose_name='Chapter title', default='', max_length=150)
-    chapter_body = models.TextField(verbose_name='Chapter text', default='')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name='book', null=True, related_name='book')
+    title = models.CharField(verbose_name='Chapter title', default='', max_length=150)
+    body = models.TextField(verbose_name='Chapter text', default='')
     word_count = models.IntegerField(verbose_name='Word count', default=0)
     created_time = models.DateTimeField(verbose_name='Created time', auto_now_add=True, editable=False)
     last_update = models.DateTimeField(verbose_name='last update', auto_now=True, editable=False)
     publish_status = models.CharField(choices=PUBLISH_STATUS, default='Published', max_length=150)
     is_vip = models.BooleanField(verbose_name='VIP chapter', default=False)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name='chapter', null=True, related_name='chapter')
+
 
     def __str__(self):
-        return self.chapter_title
+        return self.title
 
     class Meta:
         db_table = 'Chapter'
