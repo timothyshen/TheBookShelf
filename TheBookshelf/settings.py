@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'bookcase.apps.BookcaseConfig',
     'bookitem.apps.BookitemConfig',
     'comment.apps.CommentConfig',
+    'transactions.apps.TransactionsConfig',
 
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
