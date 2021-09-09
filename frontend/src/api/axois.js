@@ -11,3 +11,7 @@ export const getUserInfo = () => {
 export const getUserBookcase = () => {
     return axios.get('http://127.0.0.1:8000/api/v1/bookcase')
 }
+
+export const getUserProfile = (param) => {
+
+}

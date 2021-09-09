@@ -99,16 +99,17 @@
       </div>
     </section>
 
-
+  <footer_component></footer_component>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-
+import Footer_component from "../components/footer_component.vue";
 
 export default {
   name: 'Home',
+  components: {Footer_component},
   data() {
     return {
       activeItem: 'monetization'
