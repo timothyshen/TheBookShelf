@@ -3,20 +3,14 @@
 __author__ = 'Rick'
 __date__ = '08/09/2021 17:03'
 
-from .views import (
-    TopUpView,
-    SubscriptionView,
-    UserProfileView,
-    # cancel_plan,
-    # upgrade_account,
-)
 from django.urls import path, re_path, include
 from django.views.generic import TemplateView
+from .views import Transaction_HistoryView,Income_HistoryView,Author_PoolView,Transaction_History_DetailsView
 
 urlpatterns = [
-    path("topup/", TopUpView.as_view(), name='get_top_up'),
-    path("subscription/", SubscriptionView.as_view(), name='get_subscription'),
-    path("user_profile/", UserProfileView.as_view({'get': 'list'}), name='User_profile'),
-    # path('account/upgrade_plan/', upgrade_account, name='upgrade_plan'),
-    # path('account/cancel_plan/', cancel_plan, name='cancel_plan'),
+    path("transation_history", Transaction_HistoryView.as_view(), name='transation_history'),
+    path('transation_history/<int:transaction_id>', Transaction_History_DetailsView.as_view(), name='transation_history-details'),
+    path("income_history", Income_HistoryView.as_view(), name='income_history'),
+    path("author_pool", Author_PoolView.as_view(), name='author_pool'),
 ]
+

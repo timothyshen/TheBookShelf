@@ -11,6 +11,8 @@ class Transaction_History(models.Model):  # Creader 币支付记录
     item = models.ForeignKey(Top_up_item, default=None, on_delete=models.CASCADE)
     # 购买用户
     user = models.ForeignKey(AuthUser, default=None, on_delete=models.CASCADE)
+    # 接受币用户
+    to_user = models.ForeignKey(AuthUser, related_name='TO_USER', default=None, on_delete=models.CASCADE)
     # 购买的章节
     chapter = models.ForeignKey(Chapter, related_name='Chapter_Purchased', default=None, on_delete=models.CASCADE,
                                 verbose_name='Chapter', blank=True, null=True)
