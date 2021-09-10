@@ -1,27 +1,21 @@
 # Create your views here.
-from django.contrib.auth.decorators import login_required
-from django.http import Http404
+
+from django.http import Http404, QueryDict
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from product.models import User_profile
+from product.models import Top_up_item, User_profile
 from transactions.models import Transaction_History, Income_History, Author_Pool
 from transactions.serializers import Transaction_History_Serializers, Income_History_Serializers, \
     Author_Pool_Serializers
 from rest_framework.permissions import IsAuthenticated
+from bookitem.models import Chapter
 
 
-# 获得当前余额
-def get_balance(self):
-    data = self.request.data
-    balance = User_profile.objects.get(id=data['user'])
-    return balance
-
-
-# 根据用户ID获得用户的Transactions记录[GET]
-class Transaction_HistoryView(ListAPIView):
+# 根据用户ID获得用户的Transactions记录[GET]/[POST]
+class Transaction_HistoryView(ListCreateAPIView):
     # 登录验证
     permission_classes = [IsAuthenticated]
     # 序列化
@@ -31,9 +25,34 @@ class Transaction_HistoryView(ListAPIView):
     def get_queryset(self):
         return Transaction_History.objects.filter(user=self.request.user.id)
 
+    def post(self, request, *args, **kwargs):
+        data = QueryDict(request.data.urlencode(), mutable=True)
+        # 自动根据item赋值price
+        if len(data.get('item')) > 0:
+            item = Top_up_item.objects.get(id=data['item'])
+            price = item.book_coin
+            data.update({'price': price})
 
-# 根据Transactions_ID 进行单次查询 (所有人可查.透明化) [GET]
-class Transaction_History_DetailsView(APIView):
+        # 自动根据chapter赋值price
+        elif len(data.get('chapter')) > 0:
+            chapter = Chapter.objects.get(id=data['chapter'])
+            coins = chapter.coin_price
+            data.update({'price': coins})
+
+        # ---------获取NEW_BALANCE-----------
+        user = User_profile.objects.get(user=data.get('user', None))
+        user_balance = int(user.balance)
+        data.update({'New_balance': user_balance - int(data.get('price', None))})
+        # ----------------------------------
+
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data)
+
+
+# 根据Transactions_ID 进行单次查询 (所有人可查.透明化) [GET][无法修改故不做/Update or Delete]
+class Transaction_History_DetailsView(ListAPIView):
     def get_object(self, transaction_id):
         try:
             return Transaction_History.objects.get(pk=transaction_id)
@@ -59,7 +78,7 @@ class Income_HistoryView(ListAPIView):
 
 
 # 根据用户ID获得用户的收益池 [GET]
-class Author_PoolView(ListAPIView):
+class Author_PoolView(ListCreateAPIView):
     # 登录验证
     permission_classes = [IsAuthenticated]
     # 序列化

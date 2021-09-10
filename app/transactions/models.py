@@ -8,7 +8,7 @@ from product.models import Top_up_item
 # 此处所有支付选项均基于Creader币
 class Transaction_History(models.Model):  # Creader 币支付记录
     # purchase item - Creader购买的物品
-    item = models.ForeignKey(Top_up_item, default=None, on_delete=models.CASCADE)
+    item = models.ForeignKey(Top_up_item, default=None, on_delete=models.CASCADE,null=True)
     # 购买用户
     user = models.ForeignKey(AuthUser, default=None, on_delete=models.CASCADE)
     # 接受币用户
@@ -21,7 +21,7 @@ class Transaction_History(models.Model):  # Creader 币支付记录
     # 购买状态
     PENDING = 'Pending' #暂定
     COMPLETED = 'Completed' #完成
-    FAILED = 'Failed' #失败(币不足的情况下)
+    FAILED = 'Failed' #失败(作者提现失败的情况下)
 
     STATUS_CHOICES = (
         (PENDING, 'Pending'),
@@ -94,6 +94,10 @@ class Author_Pool(models.Model):
     History = models.ForeignKey(Income_History, default=None, on_delete=models.CASCADE)
     # 池中的总量
     Pool_total = models.IntegerField(default=0)
+    # 书的池量
+    Book_pool = models.IntegerField(default=0)
+    # 章节池量
+    Chapter_Pool = models.IntegerField(default=0)
     #---------------打赏----------------------
     # 打赏总量
     Donation_total = models.IntegerField(default=0)
