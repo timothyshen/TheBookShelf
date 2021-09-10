@@ -42,7 +42,9 @@ class Transaction_HistoryView(ListCreateAPIView):
         # ---------获取NEW_BALANCE-----------
         user = User_profile.objects.get(user=data.get('user', None))
         user_balance = int(user.balance)
-        data.update({'New_balance': user_balance - int(data.get('price', None))})
+        new_balance = user_balance - int(data.get('price', None))
+        if data.get('New_balance') != new_balance:
+            data.update({'New_balance': new_balance})
         # ----------------------------------
 
         serializer = self.get_serializer(data=data)

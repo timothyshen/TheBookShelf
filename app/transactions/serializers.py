@@ -23,7 +23,11 @@ class Transaction_History_Serializers(serializers.ModelSerializer):
         # 金额为0以下错误
         elif price <= 0:
             raise serializers.ValidationError("Invalid Amount or Price")
+        # 同时有item和chapter
+        elif data.get('chapter', None) and data.get('item', None) is not None:
+            raise serializers.ValidationError("Unexpected Error,Please check your purchase")
         return data
+
 
 
 
