@@ -21,31 +21,41 @@ class Transaction_HistoryView(ListCreateAPIView):
     # 序列化
     serializer_class = Transaction_History_Serializers
 
+    #自动赋值user
+    def perform_create(self, serializer):
+        return serializer.save(user=self.request.user)
+
     # 检测当前登录用户
     def get_queryset(self):
-        return Transaction_History.objects.filter(user=self.request.user.id)
+        return Transaction_History.objects.filter(user=self.request.user.id).all()
+
 
     def post(self, request, *args, **kwargs):
         data = QueryDict(request.data.urlencode(), mutable=True)
-        # 自动根据item赋值price
+        # 自动根据item赋值price且赋值transaction type
         if len(data.get('item')) > 0:
             item = Top_up_item.objects.get(id=data['item'])
             price = item.book_coin
             data.update({'price': price})
+            data.update({'Transaction_type': 'Purchased item'})
 
-        # 自动根据chapter赋值price
+        # 自动根据chapter赋值price且赋值transaction type
         elif len(data.get('chapter')) > 0:
             chapter = Chapter.objects.get(id=data['chapter'])
             coins = chapter.coin_price
             data.update({'price': coins})
-
-        # ---------获取NEW_BALANCE-----------
-        user = User_profile.objects.get(user=data.get('user', None))
-        user_balance = int(user.balance)
-        new_balance = user_balance - int(data.get('price', None))
-        if data.get('New_balance') != new_balance:
+            data.update({'Transaction_type': 'Purchased Chapter'})
+        # 获得新balance
+        user = User_profile.objects.get(user=int(self.request.user.id))
+        user_balance = float(user.balance)
+        # 修正价格为空
+        if data.get('price') == '':
+            data.update({'price': 0})
+            data.update({'New_balance': user_balance})
+        else:
+            price = float(data.get('price', None))
+            new_balance = user_balance - price
             data.update({'New_balance': new_balance})
-        # ----------------------------------
 
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
@@ -53,7 +63,7 @@ class Transaction_HistoryView(ListCreateAPIView):
         return Response(serializer.data)
 
 
-# 根据Transactions_ID 进行单次查询 (所有人可查.透明化) [GET][无法修改故不做/Update or Delete]
+# 根据Transactions_ID 进行单次查询 (所有人可查.透明化) [GET][无法修改故不做Create/Update or Delete]
 class Transaction_History_DetailsView(ListAPIView):
     def get_object(self, transaction_id):
         try:
@@ -67,7 +77,7 @@ class Transaction_History_DetailsView(ListAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# 根据用户ID获得用户的Income记录 [GET]
+# 根据用户ID获得用户的所有Income记录 [GET]
 class Income_HistoryView(ListAPIView):
     # 登录验证
     permission_classes = [IsAuthenticated]

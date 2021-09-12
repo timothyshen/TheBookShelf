@@ -17,7 +17,7 @@ class Transaction_History(models.Model):  # Creader 币支付记录
     chapter = models.ForeignKey(Chapter, related_name='Chapter_Purchased', default=None, on_delete=models.CASCADE,
                                 verbose_name='Chapter', blank=True, null=True)
     # 书币价格
-    price = models.IntegerField(default=0)
+    price = models.FloatField(default=0)
     # 购买状态
     PENDING = 'Pending' #暂定
     COMPLETED = 'Completed' #完成
@@ -36,11 +36,13 @@ class Transaction_History(models.Model):  # Creader 币支付记录
     #------------消费币类型---------------------
     TRANSFER = 'Transfer' #转账
     PURCHASE_CHAPTER = 'Purchased Chapter' #购买章节
+    PURCHASE_ITEM = 'Purchased item' #购买物品
     DONATE = 'Donation' #打赏
 
     TRANSACTION_CHOICES = (
         (TRANSFER, 'Transfer'),
         (PURCHASE_CHAPTER, 'Purchased Chapter'),
+        (PURCHASE_ITEM, 'Purchased item'),
         (DONATE, 'Donation'),
     )
     Transaction_type = models.CharField(max_length=20, choices=TRANSACTION_CHOICES, default=None)
@@ -78,6 +80,8 @@ class Income_History(models.Model):  # 收入记录
     )
     # 类型
     Type = models.CharField(max_length=20, choices=TYPE_CHOICES, default=None)
+    # 金额
+    Amount = models.IntegerField(default=0)
 
     #数据库信息
     class Meta:
