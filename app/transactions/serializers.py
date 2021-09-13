@@ -1,3 +1,4 @@
+from requests import Response
 from rest_framework import serializers
 
 from product.models import User_profile
@@ -6,11 +7,13 @@ from .models import Transaction_History, Income_History, Author_Pool
 
 # Transaction_History序列化
 class Transaction_History_Serializers(serializers.ModelSerializer):
-    # 给status赋值
+    # New_balance 只读
+    New_balance = serializers.FloatField(read_only=True)
+    # Status 只读
     status = serializers.CharField(read_only=True)
     # 给user赋值
     user = serializers.HiddenField(
-        default=serializers.CurrentUserDefault(),
+        default=serializers.CurrentUserDefault()
     )
 
     # 检测余额是否不足 & 不能为负数或0的转账/交易
@@ -37,10 +40,36 @@ class Transaction_History_Serializers(serializers.ModelSerializer):
             raise serializers.ValidationError("You cannot transfer to yourself")
         return data
 
+    def create(self, validated_data):
+        #验证后数据
+        instance, created = Transaction_History.objects.get_or_create(**validated_data, pk=self.data.get('id'))
+        user = User_profile.objects.get(user=instance.user.id)
+        new_balance = user.balance - float(instance.price)
+        #transaction创建后的操作
+        if created:
+            #赋值New_balance
+            instance.New_balance = new_balance
+            instance.status = 'Completed'
+            user.balance = new_balance
+            #同时创建Income History的数据
+            if instance.Transaction_type == instance.PURCHASE_CHAPTER or instance.Transaction_type == instance.DONATE:
+                Income_History.objects.create(Type=instance.Transaction_type, Author_id=instance.to_user.id,
+                                              chapter_id=instance.chapter_id
+                                              , from_user=instance.user, transaction_id=instance.id,
+                                              Amount=instance.price)
+            instance.save(force_update=True)
+        return instance
 
     class Meta:
         model = Transaction_History
         fields = "__all__"
+
+
+# 根据ID查询transaction记录
+class Transaction_Detailed_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction_History
+        fields = ('id', 'user', 'to_user', 'Transaction_type', 'chapter', 'item', 'price', 'status', 'Purchase_Time')
 
 
 # Income_History序列化
