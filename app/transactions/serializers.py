@@ -1,6 +1,6 @@
 from requests import Response
 from rest_framework import serializers
-
+from bookitem.models import Book, Chapter
 from product.models import User_profile
 from .models import Transaction_History, Income_History, Author_Pool
 
@@ -38,25 +38,48 @@ class Transaction_History_Serializers(serializers.ModelSerializer):
         # 转账给自己错误
         elif data.get('user') == data.get('to_user') and data.get('Transaction_type') == 'Transfer':
             raise serializers.ValidationError("You cannot transfer to yourself")
+        # 自己打赏自己
+        elif data.get('user') == data.get('to_user') and data.get('Transaction_type') == 'Donation':
+            raise serializers.ValidationError("You cannot Donate to yourself")
         return data
 
     def create(self, validated_data):
-        #验证后数据
+        # 验证后数据
         instance, created = Transaction_History.objects.get_or_create(**validated_data, pk=self.data.get('id'))
         user = User_profile.objects.get(user=instance.user.id)
         new_balance = user.balance - float(instance.price)
-        #transaction创建后的操作
+        # transaction创建后的操作
         if created:
-            #赋值New_balance
+            # 赋值New_balance
             instance.New_balance = new_balance
             instance.status = 'Completed'
             user.balance = new_balance
-            #同时创建Income History的数据
+            # 给用户账户余额赋值:
+            User_profile.objects.filter(user=instance.user.id).update(balance=new_balance)
+            # 同时创建Income History的数据
             if instance.Transaction_type == instance.PURCHASE_CHAPTER or instance.Transaction_type == instance.DONATE:
-                Income_History.objects.create(Type=instance.Transaction_type, Author_id=instance.to_user.id,
+                if instance.Transaction_type == instance.PURCHASE_CHAPTER:
+                    # 从Chapter获得作者id
+                    cha = Chapter.objects.get(id=instance.chapter_id)
+                    author = Book.objects.get(id=cha.book_id)
+                    author_id = author.author_id
+                else:
+                    author_id = instance.to_user.id
+                Income_History.objects.create(Type=instance.Transaction_type, Author_id=author_id,
                                               chapter_id=instance.chapter_id
                                               , from_user=instance.user, transaction_id=instance.id,
                                               Amount=instance.price)
+                # 更新到Author_Pool
+                Income_H = Income_History.objects.get(transaction_id=instance.id)
+                if Income_H.Type == 'Donation' or Income_H.Type == 'Purchased Chapter':
+                    # 如果没有池子则自动创建一个新池
+                    if not Author_Pool.objects.filter(Author_id=Income_H.Author_id).exists():
+                        Author_Pool.objects.create(Pool_total=0, Author_id=Income_H.Author_id, Donation_total=0,
+                                                   Donation_count=0, Book_pool=0, Chapter_Pool=0)
+                    Pool_data = Author_Pool.objects.get(Author_id=Income_H.Author_id)
+                    Pool = Author_Pool.objects.filter(Author_id=Income_H.Author_id)
+                    Pool.update(Pool_total=Pool_data.Pool_total+Income_H.Amount)
+
             instance.save(force_update=True)
         return instance
 

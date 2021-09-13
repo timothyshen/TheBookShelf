@@ -32,7 +32,7 @@ class Transaction_History(models.Model):  # Creader 币支付记录
     # 购买时间
     Purchase_Time = models.DateTimeField(auto_now_add=True, blank=True)
     # 新的余额
-    New_balance = models.IntegerField(default=0)
+    New_balance = models.FloatField(default=0)
     #------------消费币类型---------------------
     TRANSFER = 'Transfer' #转账
     PURCHASE_CHAPTER = 'Purchased Chapter' #购买章节
@@ -81,7 +81,7 @@ class Income_History(models.Model):  # 收入记录
     # 类型
     Type = models.CharField(max_length=20, choices=TYPE_CHOICES, default=None)
     # 金额
-    Amount = models.IntegerField(default=0)
+    Amount = models.FloatField(default=0)
 
     #数据库信息
     class Meta:
@@ -94,19 +94,17 @@ class Income_History(models.Model):  # 收入记录
 class Author_Pool(models.Model):
     # 作者
     Author = models.ForeignKey(AuthUser, default=None, related_name='Pool_User_ID', on_delete=models.CASCADE)
-    # 根据记录获得其章节的Creader币收益
-    History = models.ForeignKey(Income_History, default=None, on_delete=models.CASCADE)
     # 池中的总量
-    Pool_total = models.IntegerField(default=0)
+    Pool_total = models.FloatField(default=0)
     # 书的池量
-    Book_pool = models.IntegerField(default=0)
+    Book_pool = models.FloatField(default=0)
     # 章节池量
-    Chapter_Pool = models.IntegerField(default=0)
+    Chapter_Pool = models.FloatField(default=0)
     #---------------打赏----------------------
     # 打赏总量
-    Donation_total = models.IntegerField(default=0)
+    Donation_total = models.FloatField(default=0)
     # 打赏人数
-    Donation_count = models.IntegerField(default=0)
+    Donation_count = models.FloatField(default=0)
 
     # 数据库信息
     class Meta:

@@ -71,7 +71,7 @@ class User_profile(models.Model):
         db_table = "Profile"
 
     user = models.OneToOneField(AuthUser, related_name='created_profile', on_delete=models.CASCADE)
-    balance = models.IntegerField(default=0)
+    balance = models.FloatField(default=0)
     plan = models.ForeignKey(Subscription_Plan, related_name='vip_status', on_delete=models.SET_NULL, null=True,
                              blank=True)
     plan_status = models.CharField(max_length=20, choices=CHOICES_PLAN_STATUS, default=PLAN_INACTIVE)
