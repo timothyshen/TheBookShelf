@@ -50,7 +50,7 @@ six==1.16.0
 social-auth-app-django==5.0.0
 social-auth-core==4.1.0
 soupsieve==2.2.1
-sqlparse==0.4.1
+sqlparse==0.4.2
 stripe==2.60.0
 swapper==1.1.2.post1
 tablib==3.0.0
