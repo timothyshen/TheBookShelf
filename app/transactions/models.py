@@ -96,8 +96,10 @@ class Author_Pool(models.Model):
     Author = models.ForeignKey(AuthUser, default=None, related_name='Pool_User_ID', on_delete=models.CASCADE)
     # 池中的总量
     Pool_total = models.FloatField(default=0)
+    # TODO 重新设计Book_Pool的model, 可能需要新建一个表
     # 书的池量
     Book_pool = models.FloatField(default=0)
+    #TODO 重新设计Chapter_Pool的model, 可能需要新建一个表
     # 章节池量
     Chapter_Pool = models.FloatField(default=0)
     #---------------打赏----------------------
