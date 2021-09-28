@@ -82,7 +82,7 @@ class Chapter(models.Model):
         ('Draft', u'Draft'),
         ('Trash', u'Trash'),
     )
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name='book', null=True, related_name='book')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name='book', null=True, related_name='chapter')
     title = models.CharField(verbose_name='Chapter title', default='', max_length=150)
     body = models.TextField(verbose_name='Chapter text', default='')
     word_count = models.IntegerField(verbose_name='Word count', default=0)
