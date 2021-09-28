@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from product.models import Top_up_item, User_profile
 from transactions.models import Transaction_History, Income_History, Author_Pool
 from transactions.serializers import Transaction_History_Serializers, Income_History_Serializers, \
-    Author_Pool_Serializers
+    Author_Pool_Serializers, Transaction_Detailed_Serializer
 from rest_framework.permissions import IsAuthenticated
 from bookitem.models import Chapter
 
@@ -21,46 +21,40 @@ class Transaction_HistoryView(ListCreateAPIView):
     # 序列化
     serializer_class = Transaction_History_Serializers
 
-    #自动赋值user
+    # 自动赋值user
     def perform_create(self, serializer):
-        return serializer.save(user=self.request.user)
+        return serializer.save(user_id=int(self.request.user.id))
 
     # 检测当前登录用户
     def get_queryset(self):
-        return Transaction_History.objects.filter(user=self.request.user.id).all()
-
+        return Transaction_History.objects.filter(user=self.request.user.id)
 
     def post(self, request, *args, **kwargs):
         data = QueryDict(request.data.urlencode(), mutable=True)
         # 自动根据item赋值price且赋值transaction type
         if len(data.get('item')) > 0:
             item = Top_up_item.objects.get(id=data['item'])
-            price = item.book_coin
+            price = float(item.book_coin)
             data.update({'price': price})
             data.update({'Transaction_type': 'Purchased item'})
 
         # 自动根据chapter赋值price且赋值transaction type
         elif len(data.get('chapter')) > 0:
             chapter = Chapter.objects.get(id=data['chapter'])
-            coins = chapter.coin_price
+            coins = float(chapter.coin_price)
             data.update({'price': coins})
             data.update({'Transaction_type': 'Purchased Chapter'})
-        # 获得新balance
-        user = User_profile.objects.get(user=int(self.request.user.id))
-        user_balance = float(user.balance)
+
         # 修正价格为空
         if data.get('price') == '':
             data.update({'price': 0})
-            data.update({'New_balance': user_balance})
-        else:
-            price = float(data.get('price', None))
-            new_balance = user_balance - price
-            data.update({'New_balance': new_balance})
-
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(serializer.data)
+
+
+
 
 
 # 根据Transactions_ID 进行单次查询 (所有人可查.透明化) [GET][无法修改故不做Create/Update or Delete]
@@ -73,8 +67,10 @@ class Transaction_History_DetailsView(ListAPIView):
 
     def get(self, request, transaction_id, format=None):
         Transaction = self.get_object(transaction_id)
-        serializer = Transaction_History_Serializers(Transaction)
+        serializer = Transaction_Detailed_Serializer(Transaction)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    serializer_class = Transaction_Detailed_Serializer
 
 
 # 根据用户ID获得用户的所有Income记录 [GET]
