@@ -9,7 +9,7 @@ coreschema==0.0.4
 cryptography==3.4.8
 defusedxml==0.7.1
 Deprecated==1.2.12
-Django==3.2.7
+Django==3.2.10
 django-cors-headers==3.8.0
 django-filter==2.4.0
 django-model-utils==4.1.1
