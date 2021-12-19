@@ -90,7 +90,7 @@ class Chapter(models.Model):
     last_update = models.DateTimeField(verbose_name='last update', auto_now=True, editable=False)
     publish_status = models.CharField(choices=PUBLISH_STATUS, default='Published', max_length=150)
     is_vip = models.BooleanField(verbose_name='VIP chapter', default=False)
-    coin_price = models.IntegerField(default=0) 
+    coin_price = models.IntegerField(default=0)
 
 
     def __str__(self):
