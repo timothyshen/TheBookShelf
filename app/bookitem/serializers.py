@@ -1,9 +1,15 @@
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
+from user.models import AuthUser
 from .models import Book, BookCategory, Chapter
 from .filters import CustomerHyperlink
 
+class AuthorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AuthUser
+        fields = ('id', 'username')
 
 class CategorySerializer(serializers.ModelSerializer):
     total_number = serializers.IntegerField(read_only=True)
@@ -26,16 +32,14 @@ class ChapterDetailSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Chapter
-        fields = ('url', 'id', 'chapter_title', 'book')
+        fields = ('url', 'id', 'title', 'book')
 
 
 class BookSerializer(serializers.ModelSerializer):
     chapter = ChapterDetailSerializer(many=True, read_only=True)
     chapter_count = serializers.IntegerField(read_only=True)
     total_words = serializers.IntegerField(read_only=True)
-    book_author = serializers.HiddenField(
-        default=serializers.CurrentUserDefault(),
-    )
+    author = AuthorSerializer(read_only=True)
 
     class Meta:
         model = Book
