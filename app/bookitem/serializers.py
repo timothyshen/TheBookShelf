@@ -26,7 +26,7 @@ class ChapterDetailSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Chapter
-        fields = ('url', 'id', 'chapter_title', 'book')
+        fields = ('url', 'id', 'title', 'book')
 
 
 class BookSerializer(serializers.ModelSerializer):

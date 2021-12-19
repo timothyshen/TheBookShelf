@@ -60,12 +60,7 @@ urlpatterns = [
                   path('api/v1/', include('comment.urls')),
                   path('api/v1/', include('transactions.urls')),
                   path('api/v2/', api_router.urls),
-                  path('project/docs/', include_docs_urls(title='BlogAPI')),
-                  path(
-                      r"api/v1/docs/",
-                      schema_view.with_ui('redoc', cache_timeout=0),
-                      name="schema-swagger-ui",
-                  ),
+                  path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
                   path('api/auth/', include('rest_framework.urls')),
                   path('api-auth/', include('drf_social_oauth2.urls', namespace='drf')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
