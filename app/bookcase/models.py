@@ -17,8 +17,8 @@ class BookMark(models.Model):
         verbose_name = 'Bookmark'
         db_table = 'Bookmark'
 
-    def __str__(self):
-        return "{0}".format(self.chapter.title)
+    # def __str__(self):
+    #     return "{0}".format(self.chapter.chapter_title)
 
 
 class Bookcase(models.Model):

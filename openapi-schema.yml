@@ -1,0 +1,1738 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /api/v1/login/:
+    get:
+      operationId: listAuthUserLogins
+      description: "\u7528\u6237\u767B\u5165api\u63A5\u53E3"
+      parameters: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { }
+          description: ''
+      tags:
+        - api
+  /api/v1/users/:
+    get:
+      operationId: listAuthUsers
+      description: "\u7528\u6237\u540D\u5355\u63D0\u53D6api\u63A5\u53E3"
+      parameters: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserList'
+          description: ''
+      tags:
+        - api
+  /api/v1/topup/:
+    get:
+      operationId: listTop_up_items
+      description: ''
+      parameters: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TopUpItem'
+          description: ''
+      tags:
+        - api
+  /api/v1/subscription/:
+    get:
+      operationId: listSubscription_Plans
+      description: ''
+      parameters: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subscription'
+          description: ''
+      tags:
+        - api
+  /api/v1/user_profile/:
+    get:
+      operationId: listUserProfiles
+      description: ''
+      parameters: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { }
+          description: ''
+      tags:
+        - api
+    put:
+      operationId: updateUserProfile
+      description: ''
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api
+  /api/v1/stripe/get_stripe_pub_key/:
+    get:
+      operationId: listget_stripe_pub_keys
+      description: ''
+      parameters: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { }
+          description: ''
+      tags:
+        - api
+  /api/v1/order/:
+    get:
+      operationId: listOrders
+      description: ''
+      parameters: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderSerailzier'
+          description: ''
+      tags:
+        - api
+    post:
+      operationId: createOrder
+      description: ''
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderSerailzier'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderSerailzier'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrderSerailzier'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSerailzier'
+          description: ''
+      tags:
+        - api
+  /api/v1/order/{id}/:
+    get:
+      operationId: retrieveOrder
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: A unique integer value identifying this order.
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDetailSerailzier'
+          description: ''
+      tags:
+        - api
+    put:
+      operationId: updateOrder
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: A unique integer value identifying this order.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderDetailSerailzier'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderDetailSerailzier'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrderDetailSerailzier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDetailSerailzier'
+          description: ''
+      tags:
+        - api
+    patch:
+      operationId: partialUpdateOrder
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: A unique integer value identifying this order.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderDetailSerailzier'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderDetailSerailzier'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrderDetailSerailzier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDetailSerailzier'
+          description: ''
+      tags:
+        - api
+    delete:
+      operationId: destroyOrder
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: A unique integer value identifying this order.
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+        - api
+  /api/v1/billing:
+    get:
+      operationId: listBilling_address
+      description: ''
+      parameters: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BillingAddress'
+          description: ''
+      tags:
+        - api
+  /api/v1/billing/{id}/:
+    get:
+      operationId: retrieveBilling_address
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: A unique integer value identifying this billing_address.
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingAddress'
+          description: ''
+      tags:
+        - api
+    put:
+      operationId: updateBilling_address
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: A unique integer value identifying this billing_address.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingAddress'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BillingAddress'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BillingAddress'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingAddress'
+          description: ''
+      tags:
+        - api
+    patch:
+      operationId: partialUpdateBilling_address
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: A unique integer value identifying this billing_address.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingAddress'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BillingAddress'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BillingAddress'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingAddress'
+          description: ''
+      tags:
+        - api
+    delete:
+      operationId: destroyBilling_address
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: A unique integer value identifying this billing_address.
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+        - api
+  /api/v1/bookcase/add/:
+    get:
+      operationId: listBookCases
+      description: ''
+      parameters: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookCase'
+          description: ''
+      tags:
+        - api
+    post:
+      operationId: createBookCase
+      description: ''
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookCase'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BookCase'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BookCase'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookCase'
+          description: ''
+      tags:
+        - api
+  /api/v1/all-category:
+    get:
+      operationId: listBookCategorys
+      description: ''
+      parameters: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+          description: ''
+      tags:
+        - api
+  /api/v1/book:
+    get:
+      operationId: listBooks
+      description: ''
+      parameters: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+          description: ''
+      tags:
+        - api
+  /api/v1/book/{id}:
+    get:
+      operationId: retrieveBook
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+          description: ''
+      tags:
+        - api
+  /api/v1/book/{book_id}/chapter:
+    get:
+      operationId: listChapters
+      description: ''
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Chapter'
+          description: ''
+      tags:
+        - api
+  /api/v1/book/{book_id}/chapter/{chapter_id}:
+    get:
+      operationId: retrieveChapter
+      description: ''
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+        - name: chapter_id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chapter'
+          description: ''
+      tags:
+        - api
+  /api/v1/author/book/:
+    get:
+      operationId: listAuthorBookViewSets
+      description: ''
+      parameters: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { }
+          description: ''
+      tags:
+        - api
+    post:
+      operationId: createAuthorBookViewSet
+      description: ''
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api
+  /api/v1/author/book/{id}/:
+    get:
+      operationId: retrieveAuthorBookDetail
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api
+    put:
+      operationId: updateAuthorBookDetail
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api
+    delete:
+      operationId: destroyAuthorBookDetail
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+        - api
+  /api/v1/author/book/{book_id}/chapter:
+    get:
+      operationId: listAuthorChapters
+      description: ''
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { }
+          description: ''
+      tags:
+        - api
+    post:
+      operationId: createAuthorChapter
+      description: ''
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api
+  /api/v1/author/book/{book_id}/chapter/{chapter_id}:
+    get:
+      operationId: retrieveChapter
+      description: ''
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+        - name: chapter_id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chapter'
+          description: ''
+      tags:
+        - api
+    put:
+      operationId: updateChapter
+      description: ''
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+        - name: chapter_id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Chapter'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Chapter'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Chapter'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chapter'
+          description: ''
+      tags:
+        - api
+    patch:
+      operationId: partialUpdateChapter
+      description: ''
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+        - name: chapter_id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Chapter'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Chapter'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Chapter'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chapter'
+          description: ''
+      tags:
+        - api
+    delete:
+      operationId: destroyChapter
+      description: ''
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+        - name: chapter_id
+          in: path
+          required: true
+          description: ''
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+        - api
+  /api/v1/book/comment:
+    get:
+      operationId: listComments
+      description: ''
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?page=4
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?page=2
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Comment'
+          description: ''
+      tags:
+        - api
+    post:
+      operationId: createComment
+      description: ''
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+          description: ''
+      tags:
+        - api
+  /api/v1/register/:
+    post:
+      operationId: createAuthUserRegister
+      description: "\u7528\u6237\u6CE8\u518Capi\u63A5\u53E3"
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api
+  /api/v1/account/upgrade_plan/:
+    post:
+      operationId: createupgrade_account
+      description: ''
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api
+  /api/v1/account/cancel_plan/:
+    post:
+      operationId: createcancel_plan
+      description: ''
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api
+  /api/v1/stripe/create_checkout_session/:
+    post:
+      operationId: createcreate_checkout_session
+      description: ''
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api
+  /api/v1/stripe/create_topup_session/:
+    post:
+      operationId: createcreate_topup_session
+      description: ''
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api
+  /api/v1/stripe/check_session/:
+    post:
+      operationId: createcheck_session
+      description: ''
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api
+  /api/v1/bookmark/add:
+    post:
+      operationId: createBookMark
+      description: ''
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookMark'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BookMark'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BookMark'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookMark'
+          description: ''
+      tags:
+        - api
+  /api/v1/ranking/attribute/:
+    post:
+      operationId: createTopBookByAttribute
+      description: ''
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api
+  /api/v1/ranking/category/:
+    post:
+      operationId: createTopBookByCategory
+      description: ''
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api
+  /api-auth/token/:
+    post:
+      operationId: createToken
+      description: 'Implements an endpoint to provide access tokens
+
+
+        The endpoint is used in the following flows:
+
+
+        * Authorization code
+
+        * Password
+
+        * Client credentials'
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api-auth
+  /api-auth/convert-token/:
+    post:
+      operationId: createConvertToken
+      description: 'Implements an endpoint to convert a provider token to an access
+        token
+
+
+        The endpoint is used in the following flows:
+
+
+        * Authorization code
+
+        * Client credentials'
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api-auth
+  /api-auth/revoke-token/:
+    post:
+      operationId: createRevokeToken
+      description: Implements an endpoint to revoke access or refresh tokens
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api-auth
+  /api-auth/invalidate-sessions/:
+    post:
+      operationId: createinvalidate_sessions
+      description: ''
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api-auth
+  /api-auth/disconnect-backend/:
+    post:
+      operationId: createDisconnectBackend
+      description: An endpoint for disconnect social auth backend providers such as
+        Facebook.
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          application/x-www-form-urlencoded:
+            schema: { }
+          multipart/form-data:
+            schema: { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: { }
+          description: ''
+      tags:
+        - api-auth
+components:
+  schemas:
+    UserList:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        password:
+          type: string
+          maxLength: 128
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        is_superuser:
+          type: boolean
+          description: Designates that this user has all permissions without explicitly
+            assigning them.
+        uid:
+          type: string
+          format: uuid
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 30
+        last_name:
+          type: string
+          maxLength: 50
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+\z
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        gender:
+          enum:
+            - male
+            - female
+          type: string
+        birthday:
+          type: string
+          format: date
+          nullable: true
+        icon:
+          type: string
+          format: binary
+          nullable: true
+        role:
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+          type: integer
+          nullable: true
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+        is_active:
+          type: boolean
+        is_staff:
+          type: boolean
+        is_deleted:
+          type: boolean
+        created_date:
+          type: string
+          format: date-time
+        modified_date:
+          type: string
+          format: date-time
+        groups:
+          type: array
+          items:
+            type: integer
+          description: The groups this user belongs to. A user will get all permissions
+            granted to each of their groups.
+        user_permissions:
+          type: array
+          items:
+            type: integer
+          description: Specific permissions for this user.
+      required:
+        - password
+        - username
+        - email
+    TopUpItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        slug:
+          type: string
+          maxLength: 255
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+          nullable: true
+        price:
+          type: number
+        book_coin:
+          type: integer
+        monthly_ticket_number:
+          type: integer
+        is_featured:
+          type: boolean
+        num_available:
+          type: integer
+          nullable: true
+        image:
+          type: string
+          format: binary
+          nullable: true
+        thumbnail:
+          type: string
+          format: binary
+          nullable: true
+        price_id:
+          type: string
+          maxLength: 255
+        date_added:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - title
+        - slug
+        - price
+        - price_id
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        slug:
+          type: string
+          maxLength: 255
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+          nullable: true
+        price:
+          type: number
+        is_featured:
+          type: boolean
+        num_available:
+          type: integer
+          nullable: true
+        image:
+          type: string
+          format: binary
+          nullable: true
+        thumbnail:
+          type: string
+          format: binary
+          nullable: true
+        price_id:
+          type: string
+          maxLength: 255
+        date_added:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - title
+        - slug
+        - price
+        - price_id
+    OrderSerailzier:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        paid:
+          type: boolean
+        paid_amount:
+          type: number
+          nullable: true
+        used_coupon:
+          type: string
+          nullable: true
+          maxLength: 50
+        payment_intent:
+          type: string
+          nullable: true
+          maxLength: 255
+        status:
+          enum:
+            - unpaid
+            - completed
+            - cancelled
+            - refunded
+          type: string
+        user:
+          type: integer
+          nullable: true
+        billing_address:
+          type: integer
+          nullable: true
+    OrderDetailSerailzier:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+              readOnly: true
+            username:
+              type: string
+              description: Required. 150 characters or fewer. Letters, digits and
+                @/./+/-/_ only.
+              pattern: ^[\w.@+-]+\z
+              maxLength: 150
+            first_name:
+              type: string
+              maxLength: 30
+            last_name:
+              type: string
+              maxLength: 50
+            email:
+              type: string
+              format: email
+              maxLength: 254
+          required:
+            - username
+            - email
+        billing_address:
+          type: object
+          properties:
+            id:
+              type: integer
+              readOnly: true
+            user:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  readOnly: true
+                username:
+                  type: string
+                  description: Required. 150 characters or fewer. Letters, digits
+                    and @/./+/-/_ only.
+                  pattern: ^[\w.@+-]+\z
+                  maxLength: 150
+                first_name:
+                  type: string
+                  maxLength: 30
+                last_name:
+                  type: string
+                  maxLength: 50
+                email:
+                  type: string
+                  format: email
+                  maxLength: 254
+              required:
+                - username
+                - email
+              readOnly: true
+            first_name:
+              type: string
+              maxLength: 100
+            last_name:
+              type: string
+              maxLength: 100
+            email:
+              type: string
+              maxLength: 100
+            address:
+              type: string
+              maxLength: 100
+            zipcode:
+              type: string
+              maxLength: 100
+            place:
+              type: string
+              maxLength: 100
+            phone:
+              type: string
+              maxLength: 100
+            is_primary:
+              type: boolean
+          required:
+            - first_name
+            - last_name
+            - email
+            - address
+            - zipcode
+            - place
+            - phone
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        paid:
+          type: boolean
+        paid_amount:
+          type: number
+          nullable: true
+        used_coupon:
+          type: string
+          nullable: true
+          maxLength: 50
+        payment_intent:
+          type: string
+          nullable: true
+          maxLength: 255
+        status:
+          enum:
+            - unpaid
+            - completed
+            - cancelled
+            - refunded
+          type: string
+      required:
+        - user
+        - billing_address
+    BillingAddress:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+              readOnly: true
+            username:
+              type: string
+              description: Required. 150 characters or fewer. Letters, digits and
+                @/./+/-/_ only.
+              pattern: ^[\w.@+-]+\z
+              maxLength: 150
+            first_name:
+              type: string
+              maxLength: 30
+            last_name:
+              type: string
+              maxLength: 50
+            email:
+              type: string
+              format: email
+              maxLength: 254
+          required:
+            - username
+            - email
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 100
+        last_name:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+          maxLength: 100
+        zipcode:
+          type: string
+          maxLength: 100
+        place:
+          type: string
+          maxLength: 100
+        phone:
+          type: string
+          maxLength: 100
+        is_primary:
+          type: boolean
+      required:
+        - first_name
+        - last_name
+        - email
+        - address
+        - zipcode
+        - place
+        - phone
+    BookCase:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        book:
+          type: integer
+          nullable: true
+        bookmark:
+          type: integer
+          nullable: true
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        category_name:
+          type: string
+          maxLength: 30
+        category_code:
+          type: string
+          maxLength: 30
+        is_tab:
+          type: boolean
+        add_time:
+          type: string
+          format: date-time
+          readOnly: true
+        total_number:
+          type: integer
+          readOnly: true
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        chapter:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                readOnly: true
+              id:
+                type: integer
+                readOnly: true
+              chapter_title:
+                type: string
+                maxLength: 150
+              book:
+                type: string
+                nullable: true
+          readOnly: true
+        book_author:
+          type: string
+          readOnly: true
+        chapter_count:
+          type: integer
+          readOnly: true
+        total_words:
+          type: integer
+          readOnly: true
+        book_name:
+          type: string
+          maxLength: 30
+        book_image:
+          type: string
+          format: binary
+        book_status:
+          enum:
+            - Ongoing
+            - Completed
+          type: string
+          nullable: true
+        book_short_description:
+          type: string
+        book_description:
+          type: string
+        total_vote:
+          type: integer
+          readOnly: true
+        total_click:
+          type: integer
+          readOnly: true
+        fav_num:
+          type: integer
+          readOnly: true
+        added_time:
+          type: string
+          format: date-time
+          readOnly: true
+        last_update:
+          type: string
+          format: date-time
+          readOnly: true
+        book_type:
+          type: integer
+          nullable: true
+    Chapter:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        chapter_title:
+          type: string
+          maxLength: 150
+        chapter_body:
+          type: string
+        word_count:
+          type: integer
+        created_time:
+          type: string
+          format: date-time
+          readOnly: true
+        last_update:
+          type: string
+          format: date-time
+          readOnly: true
+        publish_status:
+          enum:
+            - Published
+            - Draft
+            - Trash
+          type: string
+        is_vip:
+          type: boolean
+        book:
+          type: integer
+          nullable: true
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        replies:
+          type: string
+          readOnly: true
+        reply_count:
+          type: string
+          readOnly: true
+        comment:
+          type: string
+        created_on:
+          type: string
+          format: date-time
+          readOnly: true
+        book:
+          type: integer
+        user:
+          type: integer
+        parent:
+          type: integer
+          nullable: true
+        likes:
+          type: array
+          items:
+            type: integer
+        dislikes:
+          type: array
+          items:
+            type: integer
+      required:
+        - comment
+        - book
+        - user
+    BookMark:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        add_time:
+          type: string
+          format: date-time
+          readOnly: true
+        chapter:
+          type: integer
+          nullable: true
