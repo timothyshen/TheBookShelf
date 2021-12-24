@@ -97,19 +97,3 @@ class AuthorChapterDetailView(RetrieveUpdateDestroyAPIView):
 #
 
 
-class TopBookByCategory(ListAPIView):
-    serializer_class = BookSerializer
-
-    def get_queryset(self):
-        request_item = self.request.data['request_item']
-        request_category = self.request.data['request_category']
-        return Book.objects.filter(book_type__category_name=request_category).annotate(Count(request_item)).order_by(
-            '-' + request_item)[:10]
-
-
-class TopBookByAttribute(ListAPIView):
-    serializer_class = BookSerializer
-
-    def get_queryset(self):
-        request_item = self.request.data['request_item']
-        return Book.objects.annotate(Count(request_item)).order_by('-' + request_item)[:10]

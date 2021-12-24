@@ -3,13 +3,11 @@
 __author__ = 'Tim'
 __date__ = '04/07/2021 23:03'
 
-from django.urls import path, include
-from django.views.decorators.csrf import csrf_exempt
-
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from .views import BookCategoryDetailView, BookListView, BookDetailView, AuthorBookViewSet, AuthorBookDetailView, \
-    TopBookByAttribute, TopBookByCategory, AuthorChapterView, ChapterDetailView, ChapterListView, \
+    AuthorChapterView, ChapterDetailView, ChapterListView, \
     AuthorChapterDetailView
 
 router = DefaultRouter()
@@ -26,6 +24,4 @@ urlpatterns = [
     path('author/book/<int:book_id>/chapter/<int:chapter_id>', AuthorChapterDetailView.as_view(),
          name='author-chapter-detail'),
     # path('book/comment', CommentPublicView.as_view(), name="book-comment-list"),
-    path('ranking/attribute/', TopBookByAttribute.as_view(), name='ranking-attribute'),
-    path('ranking/category/', TopBookByCategory.as_view(), name='ranking-category'),
 ]

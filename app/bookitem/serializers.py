@@ -1,9 +1,19 @@
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
-
+from wagtail.images.api.fields import ImageRenditionField
 from user.models import AuthUser
 from .models import Book, BookCategory, Chapter
 from .filters import CustomerHyperlink
+from wagtail.images import get_image_model
+
+class wagtailImageSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+    class Meta:
+        model = get_image_model()
+        fields = ('file','url')
+
+    def get_url(self, obj):
+        return obj.file.url
 
 class AuthorSerializer(serializers.ModelSerializer):
 
@@ -40,6 +50,7 @@ class BookSerializer(serializers.ModelSerializer):
     chapter_count = serializers.IntegerField(read_only=True)
     total_words = serializers.IntegerField(read_only=True)
     author = AuthorSerializer(read_only=True)
+    cover_photo = wagtailImageSerializer()
 
     class Meta:
         model = Book

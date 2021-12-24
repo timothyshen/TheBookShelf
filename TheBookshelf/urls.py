@@ -59,6 +59,8 @@ urlpatterns = [
                   path('api/v1/', include('bookitem.urls')),
                   path('api/v1/', include('comment.urls')),
                   path('api/v1/', include('transactions.urls')),
+                  path('api/v1/', include('notifications.urls')),
+                  path('api/v1/', include('site_operation.urls')),
                   path('api/v2/', api_router.urls),
                   path('project/docs/', include_docs_urls(title='BlogAPI')),
                   path(
