@@ -70,7 +70,7 @@ class AuthUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name']
+
 
     def __str__(self):
         return "{} - {}".format(self.email, self.username)
