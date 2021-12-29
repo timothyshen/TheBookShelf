@@ -12,7 +12,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Book, BookCategory, Chapter
-from .serializers import BookSerializer, CategorySerializer, ChapterSerializer, AuthorChapterDetailSerializer
+from .serializers import BookSerializer, CategorySerializer, ChapterSerializer, AuthorChapterDetailSerializer, \
+    ChapterDetailSerializer
 
 
 # Create your views here.
@@ -25,7 +26,7 @@ class BookListView(ListAPIView):
 
 
 class ChapterListView(ListAPIView):
-    serializer_class = ChapterSerializer
+    serializer_class = ChapterDetailSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
