@@ -3,6 +3,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.views import APIView
 from rest_framework import status, generics
 from rest_framework.response import Response
@@ -55,3 +56,9 @@ class AuthorLoginView(APIView):
         if serializer.data['role'] == 2:
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({'message': "You need to be an Author in order to log in"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserDetailView(RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = AuthUser.objects.all()
+    serializer_class = UsersSerializer

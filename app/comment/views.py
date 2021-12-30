@@ -3,10 +3,13 @@ from django.contrib.auth.decorators import login_required
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
+from bookitem.models import Book
 from comment.models import Comment
 from comment.pagination import PostPageNumberPagination
 from comment.serializers import CommentSerializer
 from notifications.signals import notify  # 消息通知
+
+from user.models import AuthUser
 
 
 class CommentPublicView(ListCreateAPIView):
