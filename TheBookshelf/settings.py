@@ -38,14 +38,14 @@ AUTH_USER_MODEL = 'user.AuthUser'
 
 INSTALLED_APPS = [
     # customised app
-    'user.apps.UserConfig',
-    'payment.apps.VipConfig',
-    'product.apps.ProductConfig',
-    'bookcase.apps.BookcaseConfig',
-    'bookitem.apps.BookitemConfig',
-    'comment.apps.CommentConfig',
-    'transactions.apps.TransactionsConfig',
-    'site_operation.apps.SiteOperationConfig',
+    'user',
+    'payment',
+    'product',
+    'bookcase',
+    'bookitem',
+    'comment',
+    'transactions',
+    'site_operation',
 
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
